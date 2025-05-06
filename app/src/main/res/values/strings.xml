@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">FIT2081_A1_Caileen_34375783</string>
+    <string name="title_activity_login_page">LoginPage</string>
+    <string name="title_activity_questionnaire_page">QuestionnairePage</string>
+    <string name="title_activity_home_screen">HomeScreen</string>
+    <string name="title_activity_insights_page">InsightsPage</string>
+    <string name="title_activity_nutri_coach_screen">NutriCoachScreen</string>
+</resources>
