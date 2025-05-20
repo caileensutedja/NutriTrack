@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.fit2081.fit2081_a1_caileen_34375783"
+    namespace = "com.fit2081.fit2081_a3_caileen_34375783"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.fit2081.fit2081_a1_caileen_34375783"
+        applicationId = "com.fit2081.fit2081_a3_caileen_34375783"
         minSdk = 35
         targetSdk = 35
         versionCode = 1
@@ -48,6 +48,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
 
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation(libs.androidx.lifecycle.livedata.ktx)
 
     val room_version = "2.6.1"
     implementation("androidx.room:room-runtime:$room_version")
