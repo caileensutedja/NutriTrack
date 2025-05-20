@@ -1,6 +1,5 @@
 package com.fit2081.fit2081_a3_caileen_34375783
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -38,28 +37,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.fit2081.fit2081_a3_caileen_34375783.patient.Patient
 import com.fit2081.fit2081_a3_caileen_34375783.patient.PatientViewModel
 import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
-import java.io.BufferedReader
-import java.io.InputStreamReader
 import android.util.Log
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.lifecycle.viewModelScope
+import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
 import kotlinx.coroutines.launch
 
 
 class LoginPage : ComponentActivity() {
     // Patient View Model
     val patientViewModel: PatientViewModel by viewModels()
-
+    val showModal = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -213,6 +207,17 @@ fun LoginScreen(
                             if (userPassword == passwordFromDB) {
                                 Toast.makeText(mContext, "Login Successful", Toast.LENGTH_LONG).show()
                                 //go to next page
+                                AuthManager.login(userId)
+                                /**
+                                 * if they have data in the questionnaire db then go to main page
+                                 * else go to questionnaire page
+                                 */
+                                mContext.startActivity(
+                                    Intent(
+                                        mContext,
+                                        QuestionnairePage::class.java
+                                    )
+                                )
                             } else {
                                 Toast.makeText(mContext, "Please try again, ID and password does not match.", Toast.LENGTH_LONG).show()
                             }
@@ -258,8 +263,11 @@ fun RegisterScreen(modifier: Modifier = Modifier,
     var matchPassword by remember { mutableStateOf(false) }
     var hasName by remember { mutableStateOf(false) }
 
+    // Information from DB
     var idList by remember { mutableStateOf<List<String>>(emptyList()) }
     var phoneFromDB by remember { mutableStateOf("") }
+    var passwordFromDB by remember { mutableStateOf("") }
+
 
     // Boolean where true is showing the DropdownMenu and false is closing it.
     var expanded by remember { mutableStateOf(false) }
@@ -272,6 +280,7 @@ fun RegisterScreen(modifier: Modifier = Modifier,
     LaunchedEffect(userId) {
         if (userId.isNotEmpty()) {
             phoneFromDB = patientViewModel.getPhoneById(userId)
+            passwordFromDB = patientViewModel.getPasswordById(userId)
         }
     }
     Surface(
@@ -435,6 +444,7 @@ fun RegisterScreen(modifier: Modifier = Modifier,
             val coroutineScope = rememberCoroutineScope()
             Button(
                 onClick = {
+                    if (passwordFromDB == ""){
                     if (phoneNoError && matchPassword && hasName) {
 //                        Log.d("debug", "passes first if with id and phone: " + userId + " & " + userPhone)
 //                        Log.d("debug", "now phone db and phone " + phoneFromDB + " and " + userPhone)
@@ -455,6 +465,10 @@ fun RegisterScreen(modifier: Modifier = Modifier,
                         }
                     } else {
                         Toast.makeText(mContext, "Please fill in your credentials and matching password.", Toast.LENGTH_LONG).show()
+                    }
+                } else {
+                    Toast.makeText(mContext, "You already have an account, please directly Login.", Toast.LENGTH_LONG).show()
+
                     }
                 }
             ) {
