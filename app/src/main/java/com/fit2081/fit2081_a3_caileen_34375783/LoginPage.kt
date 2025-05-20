@@ -208,7 +208,7 @@ fun LoginScreen(
                             if (userPassword == passwordFromDB) {
                                 Toast.makeText(mContext, "Login Successful", Toast.LENGTH_LONG).show()
                                 //go to next page
-                                AuthManager.login(userId)
+                                AuthManager.login(mContext, userId)
                                 Log.d("debug login", "auth manager rn: " + AuthManager.getPatientId())
 
                                 /**

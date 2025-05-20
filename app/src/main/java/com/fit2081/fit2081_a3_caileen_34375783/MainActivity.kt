@@ -42,6 +42,7 @@ class MainActivity : ComponentActivity() {
     private val patientViewModel: PatientViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AuthManager.init(applicationContext)
         enableEdgeToEdge()
         setContent {
             FIT2081_A3_Caileen_34375783Theme {
