@@ -1,9 +1,15 @@
 package com.fit2081.fit2081_a3_caileen_34375783.patient
 
 import android.content.Context
+import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import com.fit2081.fit2081_a3_caileen_34375783.AppDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -17,8 +23,16 @@ class PatientRepository(applicationContext: Context) {
     /**
      * Inserts the patient calling Dao
      */
+//     fun insertPatient(patient: Patient): Long {
+//         Log.d("DEBUG", "inserting patient: " + patient)
+//
+//        return patientDao.insertPatient(patient)
+//    }
     suspend fun insertPatient(patient: Patient): Long {
-        return patientDao.insertPatient(patient)
+        Log.d("DEBUG", "inserting patient: " + patient)
+        return withContext(Dispatchers.IO) {
+            patientDao.insertPatient(patient)
+        }
     }
 
     /**
@@ -34,14 +48,47 @@ class PatientRepository(applicationContext: Context) {
     suspend fun deleteAllPatients() = patientDao.deleteAllPatients()
 
     /**
+     * Gets all the current patient userIds.
+     */
+    suspend fun getAllUserIds(): List<String> {
+        Log.d("debug", "list of patients: " + patientDao.getAllUserIds().first())
+        // Just return the first emission
+        return patientDao.getAllUserIds().first()
+    }
+
+    /**
+     * Checks if the phone number matches the user ID.
+     */
+    fun isPhoneMatchUser(userId: String, phoneNumber: String):Boolean {
+        return patientDao.isPhoneMatchUser(userId, phoneNumber)
+    }
+
+    /**
+     * Checks if the password matches the user ID.
+     */
+    fun isPasswordMatchUser(userId: String, password: String):Boolean {
+        return patientDao.isPasswordMatchUser(userId, password)
+    }
+
+    /**
+     * Sets name and phone number for a userID.
+     */
+    fun claimAccount(userId: String, name: String, password: String) {
+        return patientDao.claimAccount(userId, name, password)
+    }
+
+    /**
      * Checks if the CSV has been loaded or not through checking if it's empty.
      * returns boolean
      */
     suspend fun loadDB(context: Context, fileName: String) {
+        Log.d("DEBUG", "in loadDB in Repo")
+
         // Checks only the first emission of the flow and stops getting the rest
         val patients = patientDao.getAllPatients().first()
         // Check if that list is empty or not
         if (patients.isEmpty()) {
+            Log.d("DEBUG", "empty db in loadDB in Repo")
             // If it's empty, then read the CSV
             readCSVInsert(context, fileName)
         }
@@ -50,7 +97,7 @@ class PatientRepository(applicationContext: Context) {
     /**
      * Reads the CSV
      */
-    private fun readCSVInsert(context: Context, fileName: String) {
+    private suspend fun readCSVInsert(context: Context, fileName: String) {
         try {
             val inputStream = context.assets.open(fileName)
             val reader = BufferedReader(InputStreamReader(inputStream))
@@ -85,7 +132,14 @@ class PatientRepository(applicationContext: Context) {
                     saturatedFatScore = columns[header.indexOf("SaturatedFatHEIFAscore$sex")],
                     unsaturatedFatScore = columns[header.indexOf("UnsaturatedFatHEIFAscore$sex")],
                 )
-                patientDao.insertPatient(patient)
+                Log.d("DEBUG", "patients is: " + patient)
+
+//                insertPatient(patient)
+                GlobalScope.launch {
+                    withContext(Dispatchers.IO) {
+                        insertPatient(patient)
+                    }
+                }
             }
             reader.close()
         } catch (e: Exception) {

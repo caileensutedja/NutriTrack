@@ -31,4 +31,29 @@ interface PatientDao {
      */
     @Query("DELETE FROM patient")
     suspend fun deleteAllPatients()
+
+    /**
+     * Get the all patient's user ids from the database.
+     */
+    @Query("SELECT userID FROM patient ORDER BY CAST(userID AS INTEGER) ASC")
+    fun getAllUserIds(): Flow<List<String>>
+
+    /**
+     * Returns Boolean if phone number matches the userID.
+     */
+    @Query("SELECT EXISTS(SELECT 1 FROM patient WHERE userID = :userId AND patientPhoneNumber = :phoneNumber)")
+    fun isPhoneMatchUser(userId: String, phoneNumber: String): Boolean
+
+    /**
+     * Returns Boolean if the password matches the userID.
+     */
+    @Query("SELECT EXISTS(SELECT 1 FROM patient WHERE userID = :userId AND patientPassword = :password)")
+    fun isPasswordMatchUser(userId: String, password: String): Boolean
+
+    /**
+     * Adds a name and phone number for a userID.
+     */
+    @Query("UPDATE patient SET patientName = :name, patientPassword = :password WHERE userID = :userId")
+    fun claimAccount(userId: String, name: String, password: String)
+
 }
