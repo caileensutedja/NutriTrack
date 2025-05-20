@@ -2,6 +2,7 @@ package com.fit2081.fit2081_a3_caileen_34375783.patient
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import com.fit2081.fit2081_a3_caileen_34375783.data.AppDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -51,10 +52,17 @@ class PatientRepository(applicationContext: Context) {
 
 
     /**
-     * Checks if the phone number matches the user ID.
+     * Gets the phone number based on ID.
      */
     suspend fun getPhoneById(userId: String): String {
         return patientDao.getPhoneById(userId).first()
+    }
+
+    /**
+     * Gets the name based on ID.
+     */
+    suspend fun getNameById(userId: String): String {
+        return patientDao.getNameById(userId).first()
     }
 
     /**
@@ -62,6 +70,111 @@ class PatientRepository(applicationContext: Context) {
      */
     suspend fun getPasswordById(userId: String):String {
         return patientDao.getPasswordById(userId).first()
+    }
+
+    /**
+     * Gets the patient sex based on ID.
+     */
+    suspend fun getPatientSexId(userId: String): String {
+        return patientDao.getPatientSexById(userId).first()
+    }
+
+    /**
+     * Gets the total score based on ID.
+     */
+    suspend fun getTotalScoreById(userId: String): String {
+        return patientDao.getTotalScoreById(userId).first()
+    }
+
+    /**
+     * Gets the discretionary score based on ID.
+     */
+    suspend fun getDiscretionaryScoreById(userId: String): String {
+        return patientDao.getDiscretionaryScoreById(userId).first()
+    }
+
+    /**
+     * Gets the vegetable score based on ID.
+     */
+    suspend fun getVegetableScoreById(userId: String): String {
+        return patientDao.getVegetableScoreById(userId).first()
+    }
+
+    /**
+     * Gets the fruit score based on ID.
+     */
+    suspend fun getFruitScoreById(userId: String): String {
+        return patientDao.getFruitScoreById(userId).first()
+    }
+
+    /**
+     * Gets the grains and cereal score based on ID.
+     */
+    suspend fun getGrainsAndCerealScoreById(userId: String): String {
+        return patientDao.getGrainsAndCerealScoreById(userId).first()
+    }
+
+    /**
+     * Gets the whole grains score based on ID.
+     */
+    suspend fun getWholeGrainsScoreById(userId: String): String {
+        return patientDao.getWholeGrainsScoreById(userId).first()
+    }
+
+    /**
+     * Gets the meal and alt score based on ID.
+     */
+    suspend fun getMeatAndAltScoreById(userId: String): String {
+        return patientDao.getMeatAndAltScoreById(userId).first()
+    }
+
+    /**
+     * Gets the dairy and alt score based on ID.
+     */
+    suspend fun getDairyAndALtScoreById(userId: String): String {
+        return patientDao.getDairyAndALtScoreById(userId).first()
+    }
+
+    /**
+     * Gets the sodium score based on ID.
+     */
+    suspend fun getSodiumScoreById(userId: String): String {
+        return patientDao.getSodiumScoreById(userId).first()
+    }
+
+    /**
+     * Gets the alcohol score based on ID.
+     */
+    suspend fun getAlcoholScoreById(userId: String): String {
+        return patientDao.getAlcoholScoreById(userId).first()
+    }
+
+    /**
+     * Gets the water score based on ID.
+     */
+    suspend fun getWaterScoreById(userId: String): String {
+        return patientDao.getWaterScoreById(userId).first()
+    }
+
+    /**
+     * Gets the sugar score based on ID.
+     */
+    suspend fun getSugarScoreById(userId: String): String {
+        return patientDao.getSugarScoreById(userId).first()
+    }
+
+    /**
+     * Gets the saturated fat score based on ID.
+     */
+    suspend fun getSaturatedFatScoreById(userId: String): String {
+        return patientDao.getSaturatedFatScoreById(userId).first()
+    }
+
+    /**
+     * Gets the unsaturated fat score based on ID.
+     */
+    suspend fun getUnsaturatedFatScoreById(userId: String): String {
+        return patientDao.getUnsaturatedFatScoreById(userId).first()
     }
 
     /**

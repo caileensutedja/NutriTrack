@@ -53,9 +53,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
+import android.util.Log
+import androidx.activity.viewModels
+import androidx.compose.runtime.mutableStateOf
+import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
+import com.fit2081.fit2081_a3_caileen_34375783.patient.PatientViewModel
+import kotlin.reflect.typeOf
 
 class HomeScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        val patientViewModel: PatientViewModel by viewModels()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
@@ -72,7 +79,7 @@ class HomeScreen : ComponentActivity() {
                             .fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        MyNavHost(navController)
+                        MyNavHost(navController, patientViewModel)
                     }
                 }
             }
@@ -82,10 +89,15 @@ class HomeScreen : ComponentActivity() {
 
 
 @Composable
-fun HomePage(navController: NavHostController) {
+fun HomePage(navController: NavHostController, patientViewModel: PatientViewModel) {
     val mContext = LocalContext.current
-    val sharedPref = mContext.getSharedPreferences("Assignment1", Context.MODE_PRIVATE)
-    val mID = sharedPref.getString("id", "")
+    val mID = AuthManager.getPatientId()
+
+    if (mID is String) {
+        Log.d("debug", "it is a string ")
+        patientViewModel.getTotalScoreById(mID)
+    }
+    var totalScore by patientViewModel.totalScore
 
     Column(
         modifier = Modifier
@@ -98,7 +110,7 @@ fun HomePage(navController: NavHostController) {
             fontSize = 17.sp,
             textAlign = TextAlign.Start)
         Text(
-            text = "$mID", // Prints the ID stored in sharedPref
+            text = "$mID", // Prints the ID stored in AuthManager
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Start
@@ -113,7 +125,9 @@ fun HomePage(navController: NavHostController) {
             )
             Button (
                 onClick = {
-                    mContext.startActivity(Intent(mContext, QuestionnairePage::class.java))           }){
+                    mContext.startActivity(Intent(mContext, QuestionnairePage::class.java))
+                }
+            ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
                     contentDescription = "Edit",
@@ -146,10 +160,10 @@ fun HomePage(navController: NavHostController) {
                 modifier = Modifier.weight(1f) // to put the button on the far right
             )
             Button(onClick = {
+
                 navController.navigate("Insights")
             },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-
                 ) {
                 Text(
                     text = "See all scores",
@@ -176,9 +190,10 @@ fun HomePage(navController: NavHostController) {
             Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = "Your Food Quality Score",
-                modifier = Modifier.fillMaxWidth(0.8f)
+                modifier = Modifier.fillMaxWidth(0.7f)
             )
-            Text(text = calculateTotalScore(),
+
+            Text(text = totalScore + "/100",
             color = Color.Green,
             fontWeight = FontWeight.Bold
         )
@@ -186,7 +201,6 @@ fun HomePage(navController: NavHostController) {
         Spacer(modifier = Modifier.height(20.dp))
         HorizontalDivider()
         Spacer(modifier = Modifier.height(15.dp))
-
         Text(
             text = "What is the Food Quality Score?",
             fontWeight = FontWeight.Bold,
@@ -207,22 +221,30 @@ fun HomePage(navController: NavHostController) {
 
 @Composable
 fun MyNavHost(
-    navController: NavHostController) {
+    navController: NavHostController,
+    patientViewModel: PatientViewModel) {
+    Log.d("debug navhost homescreen", "run through navhost")
     NavHost(
         navController = navController,
         startDestination = "Home"
     ) {
         composable("Home") {
-            HomePage(navController)
+            Log.d("debug navhost homescreen", "in home comp")
+            HomePage(navController, patientViewModel)
         }
         composable("Insights") {
+            Log.d("debug navhost homescreen", "in insights comp")
             InsightsScreen(navController)
         }
         composable("NutriCoach") {
-            NutriCoachScreen()
+            Log.d("debug navhost homescreen", "in nutri comp")
+
+//            NutriCoachScreen(navController)
             // To be implemented next assignment: NutriCoach Screen
         }
         composable("Settings") {
+            Log.d("debug navhost homescreen", "in settings comp")
+
             // To be implemented next assignment: Settings Screen
         }
 

@@ -4,6 +4,7 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -143,29 +144,29 @@ fun QuestionnaireScreen(){
 
     // Use LaunchedEffect to restore once.
     // Runs the first time the function runs, not at every change (as it is composable)
-    LaunchedEffect (Unit) {
-        val sharedPref = mContext.getSharedPreferences("Assignment1", Context.MODE_PRIVATE)
-
-        mCheckBoxFruits.value = sharedPref.getBoolean("fruits", false)
-        mCheckBoxVegetables.value = sharedPref.getBoolean("vegetables", false)
-        mCheckBoxGrains.value = sharedPref.getBoolean("grains", false)
-        mCheckBoxRedMeat.value = sharedPref.getBoolean("redMeat", false)
-        mCheckBoxSeafood.value = sharedPref.getBoolean("seafood", false)
-        mCheckBoxPoultry.value = sharedPref.getBoolean("poultry", false)
-        mCheckBoxFish.value = sharedPref.getBoolean("fish", false)
-        mCheckBoxEggs.value = sharedPref.getBoolean("eggs", false)
-        mCheckBoxNutsSeeds.value = sharedPref.getBoolean("nutsSeeds", false)
-        mCheckBoxVegetables.value = sharedPref.getBoolean("vegetables", false)
-
-        val loadedPersona = sharedPref.getString("persona", "")
-        val loadedTimeMeal = sharedPref.getString("timeMeal", "")
-        val loadedTimeSleep = sharedPref.getString("timeSleep", "")
-        val loadedTimeWakeUp = sharedPref.getString("timeWakeUp", "")
-        mSelectedPersona = loadedPersona.toString()
-        mTimeMeal.value = loadedTimeMeal.toString()
-        mTimeSleep.value = loadedTimeSleep.toString()
-        mTimeWakeUp.value = loadedTimeWakeUp.toString()
-    }
+//    LaunchedEffect (Unit) {
+//        val sharedPref = mContext.getSharedPreferences("Assignment1", Context.MODE_PRIVATE)
+//
+//        mCheckBoxFruits.value = sharedPref.getBoolean("fruits", false)
+//        mCheckBoxVegetables.value = sharedPref.getBoolean("vegetables", false)
+//        mCheckBoxGrains.value = sharedPref.getBoolean("grains", false)
+//        mCheckBoxRedMeat.value = sharedPref.getBoolean("redMeat", false)
+//        mCheckBoxSeafood.value = sharedPref.getBoolean("seafood", false)
+//        mCheckBoxPoultry.value = sharedPref.getBoolean("poultry", false)
+//        mCheckBoxFish.value = sharedPref.getBoolean("fish", false)
+//        mCheckBoxEggs.value = sharedPref.getBoolean("eggs", false)
+//        mCheckBoxNutsSeeds.value = sharedPref.getBoolean("nutsSeeds", false)
+//        mCheckBoxVegetables.value = sharedPref.getBoolean("vegetables", false)
+//
+//        val loadedPersona = sharedPref.getString("persona", "")
+//        val loadedTimeMeal = sharedPref.getString("timeMeal", "")
+//        val loadedTimeSleep = sharedPref.getString("timeSleep", "")
+//        val loadedTimeWakeUp = sharedPref.getString("timeWakeUp", "")
+//        mSelectedPersona = loadedPersona.toString()
+//        mTimeMeal.value = loadedTimeMeal.toString()
+//        mTimeSleep.value = loadedTimeSleep.toString()
+//        mTimeWakeUp.value = loadedTimeWakeUp.toString()
+//    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -386,10 +387,12 @@ fun QuestionnaireScreen(){
 //                    sharedPref.putString("timeWakeUp", mTimeWakeUp.value)
 
 //                    sharedPref.apply()
+                    Log.d("debug questionnaire", "before")
 
-//                    mContext.startActivity(Intent(mContext, HomeScreen::class.java))
+                    mContext.startActivity(Intent(mContext, InsightsPage::class.java))
+                    Log.d("debug questionnaire", "after")
 
-                        mContext.startActivity(Intent(mContext, test::class.java))
+//                        mContext.startActivity(Intent(mContext, test::class.java))
 //            } else {
 //                    // Error message to fill in the questionnaire.
 //                    Toast.makeText(mContext, "Please complete all parts of the questionnaire.", Toast.LENGTH_LONG).show()

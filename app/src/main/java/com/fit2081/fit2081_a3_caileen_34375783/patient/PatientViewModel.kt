@@ -16,6 +16,7 @@ class PatientViewModel (application: Application): AndroidViewModel(application)
     //Handles all data operations
     private val repository: PatientRepository = PatientRepository(application.applicationContext)
 
+    var totalScore = mutableStateOf<String?>(null)
     /**
      * Check the initial database, if empty, call the repo.
      */
@@ -42,28 +43,135 @@ class PatientViewModel (application: Application): AndroidViewModel(application)
     }
 
     /**
-     * Checks if the phone number matches the user ID.
+     * Gets the phone number that matches the user ID.
      */
      suspend fun getPhoneById(userId: String): String {
         return repository.getPhoneById(userId)
     }
-//
-//    private val _matchResult = MutableStateFlow<Boolean?>(null)
-//    val matchResult: StateFlow<Boolean?> = _matchResult
-//
-//    fun matchIDPhone(userId: String, phone: String) {
-//        viewModelScope.launch {
-//            var phoneDB = repository.getPhoneById(userId)
-//            _matchResult.value = phoneDB == phone
-//        }
-//    }
 
+    /**
+     * Gets the name that matches the user ID.
+     */
+    suspend fun getNameById(userId: String): String {
+        return repository.getNameById(userId)
+    }
 
     /**
      * Checks if the password matches the user ID.
      */
     suspend fun getPasswordById(userId: String) : String {
         return repository.getPasswordById(userId)
+    }
+
+    /**
+     * Gets the sex that matches the user ID.
+     */
+    suspend fun getPatientSexId(userId: String): String {
+        return repository.getPatientSexId(userId)
+    }
+
+    /**
+     * Gets the total score that matches the user ID.
+     */
+//    suspend fun getTotalScoreById(userId: String): String {
+//        return repository.getTotalScoreById(userId)
+//    }
+    fun getTotalScoreById(userId: String) {
+        viewModelScope.launch {
+            val score = repository.getTotalScoreById(userId)
+            totalScore.value = score
+        }
+    }
+
+    /**
+     * Gets the discretionary score that matches the user ID.
+     */
+    suspend fun getDiscretionaryScoreById(userId: String): String {
+        return repository.getDiscretionaryScoreById(userId)
+    }
+
+    /**
+     * Gets the vegetable score that matches the user ID.
+     */
+    suspend fun getVegetableScoreById(userId: String): String {
+        return repository.getVegetableScoreById(userId)
+    }
+
+    /**
+     * Gets the fruit score that matches the user ID.
+     */
+    suspend fun getFruitScoreById(userId: String): String {
+        return repository.getFruitScoreById(userId)
+    }
+
+    /**
+     * Gets the grains and cereal score that matches the user ID.
+     */
+    suspend fun getGrainsAndCerealScoreById(userId: String): String {
+        return repository.getGrainsAndCerealScoreById(userId)
+    }
+
+    /**
+     * Gets the whole grains score that matches the user ID.
+     */
+    suspend fun getWholeGrainsScoreById(userId: String): String {
+        return repository.getWholeGrainsScoreById(userId)
+    }
+
+    /**
+     * Gets the meat and alt score that matches the user ID.
+     */
+    suspend fun getMeatAndAltScoreById(userId: String): String {
+        return repository.getMeatAndAltScoreById(userId)
+    }
+
+    /**
+     * Gets the dairy and alt score that matches the user ID.
+     */
+    suspend fun getDairyAndALtScoreById(userId: String): String {
+        return repository.getDairyAndALtScoreById(userId)
+    }
+
+    /**
+     * Gets the sodium score that matches the user ID.
+     */
+    suspend fun getSodiumScoreById(userId: String): String {
+        return repository.getSodiumScoreById(userId)
+    }
+
+    /**
+     * Gets the alcohol score that matches the user ID.
+     */
+    suspend fun getAlcoholScoreById(userId: String): String {
+        return repository.getAlcoholScoreById(userId)
+    }
+
+    /**
+     * Gets the water score that matches the user ID.
+     */
+    suspend fun getWaterScoreById(userId: String): String {
+        return repository.getWaterScoreById(userId)
+    }
+
+    /**
+     * Gets the sugar score that matches the user ID.
+     */
+    suspend fun getSugarScoreById(userId: String): String {
+        return repository.getSugarScoreById(userId)
+    }
+
+    /**
+     * Gets the saturated score that matches the user ID.
+     */
+    suspend fun getSaturatedFatScoreById(userId: String): String {
+        return repository.getSaturatedFatScoreById(userId)
+    }
+
+    /**
+     * Gets the unsaturated score that matches the user ID.
+     */
+    suspend fun getUnsaturatedFatScoreById(userId: String): String {
+        return repository.getUnsaturatedFatScoreById(userId)
     }
 
     /**
