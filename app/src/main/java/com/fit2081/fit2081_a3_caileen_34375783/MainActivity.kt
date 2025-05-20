@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,15 +30,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.fit2081.fit2081_a1_caileen_34375783.R
-import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A1_Caileen_34375783Theme
+import com.fit2081.fit2081_a3_caileen_34375783.R
+import com.fit2081.fit2081_a3_caileen_34375783.patient.PatientViewModel
+import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
+
+import android.util.Log;
 
 class MainActivity : ComponentActivity() {
+    private val patientViewModel: PatientViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            FIT2081_A1_Caileen_34375783Theme {
+            FIT2081_A3_Caileen_34375783Theme {
+                Log.d("MainActivity", "initial run")
+                // Checks if the csv data is loaded
+                patientViewModel.initialDB(applicationContext)
+                Log.d("MainActivity", "after insert db")
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     WelcomeScreen(modifier = Modifier.padding(innerPadding))
                 }

@@ -54,8 +54,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.fit2081.fit2081_a1_caileen_34375783.R
-import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A1_Caileen_34375783Theme
+import com.fit2081.fit2081_a3_caileen_34375783.R
+import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
 import java.util.Calendar
 
 class QuestionnairePage : ComponentActivity() {
@@ -64,7 +64,7 @@ class QuestionnairePage : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
 
-            FIT2081_A1_Caileen_34375783Theme {
+            FIT2081_A3_Caileen_34375783Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     //losadfromsg
                     Column(

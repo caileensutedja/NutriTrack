@@ -48,8 +48,12 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import android.util.Log
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 
 
 class LoginPage : ComponentActivity() {
@@ -97,6 +101,8 @@ fun LoginScreen(
     var passwordPresent by remember { mutableStateOf(false) }
     var idPresent by remember { mutableStateOf(false) }
 
+    var passwordFromDB by remember { mutableStateOf("") }
+
     // Boolean where true is showing the DropdownMenu and false is closing it.
     var expanded by remember { mutableStateOf(false) }
     val mContext = LocalContext.current
@@ -104,6 +110,11 @@ fun LoginScreen(
     // Is ran once only.
     LaunchedEffect(Unit) {
         idList = patientViewModel.getAllUserIds()
+    }
+    LaunchedEffect(userId) {
+        if (userId.isNotEmpty()) {
+            passwordFromDB = patientViewModel.getPasswordById(userId)
+        }
     }
     Surface(
         modifier = Modifier.fillMaxSize()
@@ -197,29 +208,20 @@ fun LoginScreen(
              */
             Button(
                 onClick = {
-                    //isPasswordMatchUser()
-//                    if (idPresent && passwordPresent) {
-                        // validate pass and stuff here through db
-                        // if true {
-                            // Success message
-//                            Toast.makeText(mContext, "Login Successful", Toast.LENGTH_LONG).show()
-//                                // Move to the next page
-//                                mContext.startActivity(
-//                                    Intent(
-//                                        mContext,
-//                                        QuestionnairePage::class.java
-//                                    )
-//                                )
-////
-//                        } else {
-//                            // Error message
-//                            Toast.makeText(mContext, "Incorrect Credentials. Please try again.", Toast.LENGTH_LONG)
-//                                .show()
-//                        }
-//                    } else {
-////                         Error message
-//                        Toast.makeText(mContext, "Please choose your ID and password.", Toast.LENGTH_LONG).show()
-//                    }
+                    if (idPresent && passwordPresent) {
+                        if (passwordFromDB != "") {
+                            if (userPassword == passwordFromDB) {
+                                Toast.makeText(mContext, "Login Successful", Toast.LENGTH_LONG).show()
+                                //go to next page
+                            } else {
+                                Toast.makeText(mContext, "Please try again, ID and password does not match.", Toast.LENGTH_LONG).show()
+                            }
+                        } else {
+                            Toast.makeText(mContext, "Account does not exist, please claim your account.", Toast.LENGTH_LONG).show()
+                        }
+                    } else {
+                        Toast.makeText(mContext, "Please fill in your credentials.", Toast.LENGTH_LONG).show()
+                    }
                 }
             ) {
                 Text("Continue")
@@ -240,9 +242,7 @@ fun LoginScreen(
     }
 }
 
-//@Preview(showBackground = true)
 @Composable
-//fun RegisterScreen(modifier: Modifier = Modifier) {
 fun RegisterScreen(modifier: Modifier = Modifier,
                    patientViewModel: PatientViewModel,
                    goToLoginScreen: () -> Unit) {
@@ -259,6 +259,7 @@ fun RegisterScreen(modifier: Modifier = Modifier,
     var hasName by remember { mutableStateOf(false) }
 
     var idList by remember { mutableStateOf<List<String>>(emptyList()) }
+    var phoneFromDB by remember { mutableStateOf("") }
 
     // Boolean where true is showing the DropdownMenu and false is closing it.
     var expanded by remember { mutableStateOf(false) }
@@ -267,6 +268,11 @@ fun RegisterScreen(modifier: Modifier = Modifier,
     // Is ran once only.
     LaunchedEffect(Unit) {
         idList = patientViewModel.getAllUserIds()
+    }
+    LaunchedEffect(userId) {
+        if (userId.isNotEmpty()) {
+            phoneFromDB = patientViewModel.getPhoneById(userId)
+        }
     }
     Surface(
     modifier = Modifier.fillMaxSize()
@@ -425,27 +431,30 @@ fun RegisterScreen(modifier: Modifier = Modifier,
              * Register Button
              * save it in the db
              */
-            Log.d("000debug", "run it " + patientViewModel.isPhoneMatchUser(userId, userPhone))
-
+            // Creates a coroutine to claim the account and store it in the DB.
+            val coroutineScope = rememberCoroutineScope()
             Button(
                 onClick = {
                     if (phoneNoError && matchPassword && hasName) {
-                        Log.d("debug", "passes first if")
-                        Log.d("debug", "passes first if with id and phone: " + userId + " & " + userPhone)
-                        Log.d("debug", "run it " + patientViewModel.isPhoneMatchUser(userId, userPhone))
-                        if (patientViewModel.isPhoneMatchUser(userId, userPhone)){
+//                        Log.d("debug", "passes first if with id and phone: " + userId + " & " + userPhone)
+//                        Log.d("debug", "now phone db and phone " + phoneFromDB + " and " + userPhone)
+                        if (phoneFromDB == userPhone) {
                             Log.d("debug", "passes second if")
-
                             //Insert pass and name in db
-                            patientViewModel.claimAccount(userId, userName, userPassword)
+                            coroutineScope.launch {
+                                try {
+                                    patientViewModel.claimAccount(userId, userName, userPassword)
+                                    Log.d("debug", "Ran through claim acc.")
+                                } catch (e: Exception) {
+                                    Log.d("Error", "Could not claim patient account.")
+                                }
+                            }
                             Toast.makeText(mContext, "Account Claimed", Toast.LENGTH_LONG).show()
                         } else {
-                            Log.d("debug", "wrong acc")
-                            Toast.makeText(mContext, "Wrong Account, please try again.", Toast.LENGTH_LONG).show()
-
+                            Toast.makeText(mContext, "Invalid account, please try again.", Toast.LENGTH_LONG).show()
                         }
                     } else {
-                        Toast.makeText(mContext, "Please fill in your credentials.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(mContext, "Please fill in your credentials and matching password.", Toast.LENGTH_LONG).show()
                     }
                 }
             ) {
@@ -464,35 +473,4 @@ fun RegisterScreen(modifier: Modifier = Modifier,
             }
         }
     }
-}
-
-
-/**
- * Function for to validate the login attempt.
- * It checks if the ID matches the appropriate phone number.
- */
-fun validateLogin(context: Context, fileName: String, userId: String, userPhone: String): Boolean {
-    val assets = context.assets
-    var isValidUser = false // Initialise to false
-
-    try {
-        val inputStream = assets.open(fileName)
-
-        val reader = BufferedReader(InputStreamReader(inputStream))
-        //Read CSV by line
-        reader.useLines { lines ->
-            // Drop the header
-            lines.drop(1).forEach { line ->
-                // Read data per line separated by comma
-                val values = line.split(",")
-                if (values.size > 1 && values[0] == userPhone && values[1] == userId ){
-                    isValidUser = true
-                    return@forEach
-                }
-            }
-        }
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
-    return isValidUser
 }

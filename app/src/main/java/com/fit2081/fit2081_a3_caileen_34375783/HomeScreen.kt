@@ -52,15 +52,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.fit2081.fit2081_a1_caileen_34375783.R
-import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A1_Caileen_34375783Theme
+import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
 
 class HomeScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            FIT2081_A1_Caileen_34375783Theme {
+            FIT2081_A3_Caileen_34375783Theme {
                 val navController: NavHostController = rememberNavController()
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),

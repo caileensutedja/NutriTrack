@@ -41,19 +41,19 @@ interface PatientDao {
     /**
      * Returns Boolean if phone number matches the userID.
      */
-    @Query("SELECT EXISTS(SELECT 1 FROM patient WHERE userID = :userId AND patientPhoneNumber = :phoneNumber)")
-    fun isPhoneMatchUser(userId: String, phoneNumber: String): Boolean
+    @Query("SELECT patientPhoneNumber FROM patient WHERE userID = :userId ")
+    fun getPhoneById(userId: String): Flow<String>
 
     /**
      * Returns Boolean if the password matches the userID.
      */
-    @Query("SELECT EXISTS(SELECT 1 FROM patient WHERE userID = :userId AND patientPassword = :password)")
-    fun isPasswordMatchUser(userId: String, password: String): Boolean
+    @Query("SELECT patientPassword FROM patient WHERE userID = :userId")
+    fun getPasswordById(userId: String): Flow<String>
 
     /**
      * Adds a name and phone number for a userID.
      */
     @Query("UPDATE patient SET patientName = :name, patientPassword = :password WHERE userID = :userId")
-    fun claimAccount(userId: String, name: String, password: String)
+    suspend fun claimAccount(userId: String, name: String, password: String)
 
 }

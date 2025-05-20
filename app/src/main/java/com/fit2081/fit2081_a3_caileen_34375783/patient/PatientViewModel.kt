@@ -5,11 +5,8 @@ import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-
 import android.util.Log;
-import androidx.room.Query
 
 
 class PatientViewModel (application: Application): AndroidViewModel(application){
@@ -17,8 +14,7 @@ class PatientViewModel (application: Application): AndroidViewModel(application)
     private val repository: PatientRepository = PatientRepository(application.applicationContext)
 
     // Exposes the selected patient as StateFlow
-    private val _selectedPatient = MutableStateFlow<Patient?>(null)
-//    val selected
+//    private val _selectedPatient = MutableStateFlow<Patient?>(null)
 
     /**
      * Check the initial database, if empty, call the repo.
@@ -51,23 +47,21 @@ class PatientViewModel (application: Application): AndroidViewModel(application)
     /**
      * Checks if the phone number matches the user ID.
      */
-    fun isPhoneMatchUser(userId: String, phoneNumber: String):Boolean {
-        Log.d("vm", "pass hi")
-        Log.d("VIEW MODEL DEBUG", "result match is: " + repository.isPhoneMatchUser(userId, phoneNumber))
-        return repository.isPhoneMatchUser(userId, phoneNumber)
+    suspend fun getPhoneById(userId: String) : String {
+        return repository.getPhoneById(userId)
     }
 
     /**
      * Checks if the password matches the user ID.
      */
-    fun isPasswordMatchUser(userId: String, password: String):Boolean {
-        return repository.isPasswordMatchUser(userId, password)
+    suspend fun getPasswordById(userId: String) : String {
+        return repository.getPasswordById(userId)
     }
 
     /**
      * Sets name and phone number for a userID.
      */
-    fun claimAccount(userId: String, name: String, password: String){
+    suspend fun claimAccount(userId: String, name: String, password: String){
         return repository.claimAccount(userId, name, password)
     }
 

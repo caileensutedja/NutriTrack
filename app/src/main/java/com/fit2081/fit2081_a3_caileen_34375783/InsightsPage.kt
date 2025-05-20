@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A1_Caileen_34375783Theme
+import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -43,7 +43,7 @@ class InsightsPage : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            FIT2081_A1_Caileen_34375783Theme {
+            FIT2081_A3_Caileen_34375783Theme {
                 val navController: NavHostController = rememberNavController()
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),

@@ -15,18 +15,18 @@ data class Patient(
     val patientName: String, //Patient's name
     val patientPassword: String, //Patient's password
     val patientSex: String, //Patient's sex
-    val totalScore: String, // HEIFAtotalscoreMale
-    val discretionaryScore: String, //DiscretionaryHEIFAscoreMale
-    val vegetableScore: String, //VegetablesHEIFAscoreMale
-    val fruitScore: String, //FruitHEIFAscoreMale
-    val grainsAndCerealScore: String, // GrainsandcerealsHEIFAscoreMale
-    val wholeGrainsScore: String, //WholegrainsHEIFAscoreMale
-    val meatAndAltScore: String, //MeatandalternativesHEIFAscoreMale
-    val dairyAndALtScore: String, //DairyandalternativesHEIFAscoreMale
-    val sodiumScore: String, //SodiumHEIFAscoreMale
-    val alcoholScore: String, //AlcoholHEIFAscoreMale
-    val waterScore: String, //WaterHEIFAscoreMale
-    val sugarScore: String, //SugarHEIFAscoreMale
-    val saturatedFatScore: String, //SaturatedFatHEIFAscoreMale
-    val unsaturatedFatScore: String //UnsaturatedFatHEIFAscoreMale
+    val totalScore: String, // HEIFAtotalscore
+    val discretionaryScore: String, //DiscretionaryHEIFAscore
+    val vegetableScore: String, //VegetablesHEIFAscore
+    val fruitScore: String, //FruitHEIFAscore
+    val grainsAndCerealScore: String, // GrainsandcerealsHEIFAscore
+    val wholeGrainsScore: String, //WholegrainsHEIFAscore
+    val meatAndAltScore: String, //MeatandalternativesHEIFAscore
+    val dairyAndALtScore: String, //DairyandalternativesHEIFAscore
+    val sodiumScore: String, //SodiumHEIFAscore
+    val alcoholScore: String, //AlcoholHEIFAscore
+    val waterScore: String, //WaterHEIFAscore
+    val sugarScore: String, //SugarHEIFAscore
+    val saturatedFatScore: String, //SaturatedFatHEIFAscore
+    val unsaturatedFatScore: String //UnsaturatedFatHEIFAscore
 )

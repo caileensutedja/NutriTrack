@@ -2,7 +2,6 @@ package com.fit2081.fit2081_a3_caileen_34375783.patient
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import com.fit2081.fit2081_a3_caileen_34375783.AppDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -29,7 +28,6 @@ class PatientRepository(applicationContext: Context) {
 //        return patientDao.insertPatient(patient)
 //    }
     suspend fun insertPatient(patient: Patient): Long {
-        Log.d("DEBUG", "inserting patient: " + patient)
         return withContext(Dispatchers.IO) {
             patientDao.insertPatient(patient)
         }
@@ -56,24 +54,25 @@ class PatientRepository(applicationContext: Context) {
         return patientDao.getAllUserIds().first()
     }
 
+
     /**
      * Checks if the phone number matches the user ID.
      */
-    fun isPhoneMatchUser(userId: String, phoneNumber: String):Boolean {
-        return patientDao.isPhoneMatchUser(userId, phoneNumber)
+    suspend fun getPhoneById(userId: String): String {
+        return patientDao.getPhoneById(userId).first()
     }
 
     /**
      * Checks if the password matches the user ID.
      */
-    fun isPasswordMatchUser(userId: String, password: String):Boolean {
-        return patientDao.isPasswordMatchUser(userId, password)
+    suspend fun getPasswordById(userId: String):String {
+        return patientDao.getPasswordById(userId).first()
     }
 
     /**
      * Sets name and phone number for a userID.
      */
-    fun claimAccount(userId: String, name: String, password: String) {
+    suspend fun claimAccount(userId: String, name: String, password: String) {
         return patientDao.claimAccount(userId, name, password)
     }
 
@@ -82,8 +81,6 @@ class PatientRepository(applicationContext: Context) {
      * returns boolean
      */
     suspend fun loadDB(context: Context, fileName: String) {
-        Log.d("DEBUG", "in loadDB in Repo")
-
         // Checks only the first emission of the flow and stops getting the rest
         val patients = patientDao.getAllPatients().first()
         // Check if that list is empty or not
@@ -97,7 +94,7 @@ class PatientRepository(applicationContext: Context) {
     /**
      * Reads the CSV
      */
-    private suspend fun readCSVInsert(context: Context, fileName: String) {
+    private fun readCSVInsert(context: Context, fileName: String) {
         try {
             val inputStream = context.assets.open(fileName)
             val reader = BufferedReader(InputStreamReader(inputStream))
@@ -134,7 +131,6 @@ class PatientRepository(applicationContext: Context) {
                 )
                 Log.d("DEBUG", "patients is: " + patient)
 
-//                insertPatient(patient)
                 GlobalScope.launch {
                     withContext(Dispatchers.IO) {
                         insertPatient(patient)
