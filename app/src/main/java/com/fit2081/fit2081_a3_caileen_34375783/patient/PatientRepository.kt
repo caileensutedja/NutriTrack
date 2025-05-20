@@ -2,7 +2,7 @@ package com.fit2081.fit2081_a3_caileen_34375783.patient
 
 import android.content.Context
 import android.util.Log
-import com.fit2081.fit2081_a3_caileen_34375783.AppDatabase
+import com.fit2081.fit2081_a3_caileen_34375783.data.AppDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
@@ -17,16 +17,11 @@ class PatientRepository(applicationContext: Context) {
     val database = AppDatabase.getDatabase(applicationContext)
     val patientDao = database.patientDao()
     // Stores the current list of patients
-    val allPatients: Flow<List<Patient>> = patientDao.getAllPatients()
+//    val allPatients: Flow<List<Patient>> = patientDao.getAllPatients()
 
     /**
      * Inserts the patient calling Dao
      */
-//     fun insertPatient(patient: Patient): Long {
-//         Log.d("DEBUG", "inserting patient: " + patient)
-//
-//        return patientDao.insertPatient(patient)
-//    }
     suspend fun insertPatient(patient: Patient): Long {
         return withContext(Dispatchers.IO) {
             patientDao.insertPatient(patient)
@@ -36,14 +31,14 @@ class PatientRepository(applicationContext: Context) {
     /**
      * Gets patient by ID through Dao
      */
-    fun getPatientById(id: String): Flow<Patient> {
+    suspend fun getPatientById(id: String): Flow<Patient> {
         return patientDao.getPatientById(id)
     }
 
-    /**
-     * Deletes all patient through Dao
-     */
-    suspend fun deleteAllPatients() = patientDao.deleteAllPatients()
+//    /**
+//     * Deletes all patient through Dao
+//     */
+//    suspend fun deleteAllPatients() = patientDao.deleteAllPatients()
 
     /**
      * Gets all the current patient userIds.

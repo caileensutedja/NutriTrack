@@ -1,4 +1,4 @@
-package com.fit2081.fit2081_a3_caileen_34375783.network;
+package com.fit2081.fit2081_a3_caileen_34375783.FruitAPI;
 
 import retrofit2.Response;
 import retrofit2.Retrofit;

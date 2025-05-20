@@ -35,6 +35,8 @@ import com.fit2081.fit2081_a3_caileen_34375783.patient.PatientViewModel
 import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
 
 import android.util.Log;
+import androidx.compose.runtime.LaunchedEffect
+import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
 
 class MainActivity : ComponentActivity() {
     private val patientViewModel: PatientViewModel by viewModels()
@@ -43,12 +45,24 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FIT2081_A3_Caileen_34375783Theme {
-                Log.d("MainActivity", "initial run")
                 // Checks if the csv data is loaded
                 patientViewModel.initialDB(applicationContext)
-                Log.d("MainActivity", "after insert db")
+                Log.d("debug main act if restart", "auth manager start: "+ AuthManager.getPatientId())
+                // Variables
+                val context = LocalContext.current
+                val patientId = AuthManager.getPatientId()
+
+                LaunchedEffect(patientId) {
+                    if (patientId != null) {
+                        context.startActivity(Intent(context, QuestionnairePage::class.java))
+                    }
+                }
+
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    WelcomeScreen(modifier = Modifier.padding(innerPadding))
+                    if (patientId == null) {
+                        Log.d("debug main act", "pass wel screen")
+                        WelcomeScreen(modifier = Modifier.padding(innerPadding))
+                    }
                 }
             }
         }

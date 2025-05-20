@@ -5,4 +5,10 @@
     <string name="title_activity_home_screen">HomeScreen</string>
     <string name="title_activity_insights_page">InsightsPage</string>
     <string name="title_activity_nutri_coach_screen">NutriCoachScreen</string>
+    <string name="title_activity_test">test</string>
+    <string name="action_go">Go</string>
+    <string name="app_title">FIT2081 GenAI</string>
+    <string name="label_prompt">Prompt</string>
+    <string name="prompt_placeholder"></string>
+    <string name="results_placeholder">(Results will appear here)</string>
 </resources>

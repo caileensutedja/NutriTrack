@@ -54,7 +54,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.fit2081.fit2081_a3_caileen_34375783.R
 import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
 import java.util.Calendar
 
@@ -369,31 +368,33 @@ fun QuestionnaireScreen(){
         // Save Button
         Row {
             Button(onClick = {
-                if (mSelectedPersona.isNotEmpty() && mTimeMeal.value.isNotEmpty() && mTimeSleep.value.isNotEmpty() && mTimeWakeUp.value.isNotEmpty()){
-                    val sharedPref = mContext.getSharedPreferences("Assignment1", Context.MODE_PRIVATE).edit()
+//                if (mSelectedPersona.isNotEmpty() && mTimeMeal.value.isNotEmpty() && mTimeSleep.value.isNotEmpty() && mTimeWakeUp.value.isNotEmpty()){
+//                    val sharedPref = mContext.getSharedPreferences("Assignment1", Context.MODE_PRIVATE).edit()
+//
+//                    sharedPref.putBoolean("fruits", mCheckBoxFruits.value)
+//                    sharedPref.putBoolean("vegetables", mCheckBoxVegetables.value)
+//                    sharedPref.putBoolean("grains", mCheckBoxGrains.value)
+//                    sharedPref.putBoolean("redMeat", mCheckBoxRedMeat.value)
+//                    sharedPref.putBoolean("seafood", mCheckBoxSeafood.value)
+//                    sharedPref.putBoolean("poultry", mCheckBoxPoultry.value)
+//                    sharedPref.putBoolean("fish", mCheckBoxFish.value)
+//                    sharedPref.putBoolean("eggs", mCheckBoxEggs.value)
+//                    sharedPref.putBoolean("nutsSeeds", mCheckBoxNutsSeeds.value)
+//                    sharedPref.putString("persona", mSelectedPersona)
+//                    sharedPref.putString("timeMeal", mTimeMeal.value)
+//                    sharedPref.putString("timeSleep", mTimeSleep.value)
+//                    sharedPref.putString("timeWakeUp", mTimeWakeUp.value)
 
-                    sharedPref.putBoolean("fruits", mCheckBoxFruits.value)
-                    sharedPref.putBoolean("vegetables", mCheckBoxVegetables.value)
-                    sharedPref.putBoolean("grains", mCheckBoxGrains.value)
-                    sharedPref.putBoolean("redMeat", mCheckBoxRedMeat.value)
-                    sharedPref.putBoolean("seafood", mCheckBoxSeafood.value)
-                    sharedPref.putBoolean("poultry", mCheckBoxPoultry.value)
-                    sharedPref.putBoolean("fish", mCheckBoxFish.value)
-                    sharedPref.putBoolean("eggs", mCheckBoxEggs.value)
-                    sharedPref.putBoolean("nutsSeeds", mCheckBoxNutsSeeds.value)
-                    sharedPref.putString("persona", mSelectedPersona)
-                    sharedPref.putString("timeMeal", mTimeMeal.value)
-                    sharedPref.putString("timeSleep", mTimeSleep.value)
-                    sharedPref.putString("timeWakeUp", mTimeWakeUp.value)
+//                    sharedPref.apply()
 
-                    sharedPref.apply()
+//                    mContext.startActivity(Intent(mContext, HomeScreen::class.java))
 
-                    mContext.startActivity(Intent(mContext, HomeScreen::class.java))
-            } else {
-                    // Error message to fill in the questionnaire.
-                    Toast.makeText(mContext, "Please complete all parts of the questionnaire.", Toast.LENGTH_LONG).show()
-
-                }
+                        mContext.startActivity(Intent(mContext, test::class.java))
+//            } else {
+//                    // Error message to fill in the questionnaire.
+//                    Toast.makeText(mContext, "Please complete all parts of the questionnaire.", Toast.LENGTH_LONG).show()
+//
+//                }
             }){
                 Text(text = "Save")
             }

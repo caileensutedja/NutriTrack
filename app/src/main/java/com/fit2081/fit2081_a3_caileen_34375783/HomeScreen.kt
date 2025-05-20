@@ -219,6 +219,7 @@ fun MyNavHost(
             InsightsScreen(navController)
         }
         composable("NutriCoach") {
+            NutriCoachScreen()
             // To be implemented next assignment: NutriCoach Screen
         }
         composable("Settings") {

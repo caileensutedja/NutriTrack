@@ -7,22 +7,22 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import android.util.Log;
+import androidx.compose.runtime.mutableStateOf
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 
 class PatientViewModel (application: Application): AndroidViewModel(application){
     //Handles all data operations
     private val repository: PatientRepository = PatientRepository(application.applicationContext)
 
-    // Exposes the selected patient as StateFlow
-//    private val _selectedPatient = MutableStateFlow<Patient?>(null)
-
     /**
      * Check the initial database, if empty, call the repo.
      */
     fun initialDB(context: Context){
-        Log.d("DEBUG", "ran through initialDB in ViewModel")
+//        Log.d("DEBUG", "ran through initialDB in ViewModel")
         viewModelScope.launch {
-            Log.d("DEBUG", "launching through initialDB in ViewModel")
+//            Log.d("DEBUG", "launching through initialDB in ViewModel")
             repository.loadDB(context = context, "data.csv")
         }
     }
@@ -30,7 +30,7 @@ class PatientViewModel (application: Application): AndroidViewModel(application)
     /**
      * Get the patient by ID from the database
      */
-    fun getPatientById(id: String): Flow<Patient> {
+    suspend fun getPatientById(id: String): Flow<Patient> {
         return repository.getPatientById(id)
     }
 
@@ -38,18 +38,26 @@ class PatientViewModel (application: Application): AndroidViewModel(application)
      * Get all userIDs present in the database
      */
     suspend fun getAllUserIds(): List<String> {
-//        viewModelScope.launch {
-//            val userIds = repository.getAllUserIds()
-//        }
         return repository.getAllUserIds()
     }
 
     /**
      * Checks if the phone number matches the user ID.
      */
-    suspend fun getPhoneById(userId: String) : String {
+     suspend fun getPhoneById(userId: String): String {
         return repository.getPhoneById(userId)
     }
+//
+//    private val _matchResult = MutableStateFlow<Boolean?>(null)
+//    val matchResult: StateFlow<Boolean?> = _matchResult
+//
+//    fun matchIDPhone(userId: String, phone: String) {
+//        viewModelScope.launch {
+//            var phoneDB = repository.getPhoneById(userId)
+//            _matchResult.value = phoneDB == phone
+//        }
+//    }
+
 
     /**
      * Checks if the password matches the user ID.

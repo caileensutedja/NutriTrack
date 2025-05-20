@@ -1,7 +1,8 @@
+package com.fit2081.fit2081_a3_caileen_34375783.FruitAPI
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.fit2081.fit2081_a3_caileen_34375783.network.FruitAPIService
-import com.fit2081.fit2081_a3_caileen_34375783.network.UiState
+import com.fit2081.fit2081_a3_caileen_34375783.GenAI.UiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

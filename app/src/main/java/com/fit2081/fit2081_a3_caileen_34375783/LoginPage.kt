@@ -43,6 +43,7 @@ import com.fit2081.fit2081_a3_caileen_34375783.patient.PatientViewModel
 import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
 import android.util.Log
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -208,6 +209,8 @@ fun LoginScreen(
                                 Toast.makeText(mContext, "Login Successful", Toast.LENGTH_LONG).show()
                                 //go to next page
                                 AuthManager.login(userId)
+                                Log.d("debug login", "auth manager rn: " + AuthManager.getPatientId())
+
                                 /**
                                  * if they have data in the questionnaire db then go to main page
                                  * else go to questionnaire page
@@ -268,6 +271,7 @@ fun RegisterScreen(modifier: Modifier = Modifier,
     var phoneFromDB by remember { mutableStateOf("") }
     var passwordFromDB by remember { mutableStateOf("") }
 
+//    val matchResult by patientViewModel.matchResult.collectAsState()
 
     // Boolean where true is showing the DropdownMenu and false is closing it.
     var expanded by remember { mutableStateOf(false) }

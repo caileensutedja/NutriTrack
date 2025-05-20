@@ -1,12 +1,13 @@
 package com.fit2081.fit2081_a3_caileen_34375783
 
-import FruityAIViewModel
+import com.fit2081.fit2081_a3_caileen_34375783.FruitAPI.FruityAIViewModel
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,19 +25,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.fit2081.fit2081_a3_caileen_34375783.network.GenAIViewModel
-import com.fit2081.fit2081_a3_caileen_34375783.network.UiState
+import com.fit2081.fit2081_a3_caileen_34375783.GenAI.GenAIViewModel
+import com.fit2081.fit2081_a3_caileen_34375783.GenAI.UiState
 import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
 
 class test : ComponentActivity() {
@@ -46,36 +44,40 @@ class test : ComponentActivity() {
         setContent {
             FIT2081_A3_Caileen_34375783Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-//                    GenAIScreen(modifier = Modifier.padding(innerPadding) )
+                    Column() {
+                    GenAIScreen(modifier = Modifier.padding(innerPadding))
                     FruityUIScreen(modifier = Modifier.padding(innerPadding))
+                }
                 }
             }
         }
     }
 }
 
+@Preview(showBackground = true)
 @Composable
-fun GenAIScreen(modifier: Modifier = Modifier
+fun GenAIScreen(modifier: Modifier = Modifier.fillMaxHeight(0.5f)
 ) {
-    val     genAiViewModel: GenAIViewModel = viewModel()
+    val genAiViewModel: GenAIViewModel = viewModel()
 
-    val placeholderPrompt = stringResource(R.string.prompt_placeholder)
-    val placeholderResult = stringResource(R.string.results_placeholder)
-    var prompt by rememberSaveable { mutableStateOf(placeholderPrompt) }
-    var result by rememberSaveable { mutableStateOf(placeholderResult) }
+//    val placeholderPrompt = stringResource(R.string.prompt_placeholder)
+//    val placeholderResult = stringResource(R.string.results_placeholder)
+//    var prompt by rememberSaveable { mutableStateOf(placeholderPrompt) }
+//    var result by rememberSaveable { mutableStateOf(placeholderResult) }
     val uiState by genAiViewModel.uiState.collectAsState()
-    val context = LocalContext.current
 
+
+    var prompt by remember { mutableStateOf("") }
+    var result by remember { mutableStateOf("") }
     Column(
         modifier = Modifier.fillMaxSize()
+                            .fillMaxHeight(0.5f)
     ) {
         Text(
             text = stringResource(R.string.app_title),
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(16.dp)
         )
-
-
 
         Row(
             modifier = Modifier.padding(all = 16.dp)
@@ -92,7 +94,6 @@ fun GenAIScreen(modifier: Modifier = Modifier
 
             Button(
                 onClick = {
-
                     genAiViewModel.sendPrompt( prompt)
                 },
                 enabled = prompt.isNotEmpty(),
@@ -133,25 +134,19 @@ fun GenAIScreen(modifier: Modifier = Modifier
 @Preview(showBackground = true)
 @Composable
 fun FruityUIScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier.fillMaxHeight(0.5f)
 ) {
     val fruitAiViewModel: FruityAIViewModel = viewModel()
 
     var fruitName by remember { mutableStateOf("") }
-//    val placeholderAIPrompt = stringResource(R.string.prompt_placeholder)
-    var placeholderAIPrompt by remember { mutableStateOf("") }
-    var placeholderAIResult by remember { mutableStateOf("") }
     var resultFruit by remember { mutableStateOf("") }
-
-    val coroutineScope = rememberCoroutineScope()
     val uiFruitState by fruitAiViewModel.uiState.collectAsState()
 
     Column(
         modifier = Modifier
             .padding(16.dp)
-            .fillMaxWidth(),
-//        horizontalAlignment = Alignment.CenterHorizontally,
-//        verticalArrangement = Arrangement.spacedBy(8.dp)
+            .fillMaxWidth()
+            .fillMaxHeight(0.5f)
     ) {
         OutlinedTextField(
             value = fruitName,
@@ -166,22 +161,6 @@ fun FruityUIScreen(
         ) {
             Text("Find Fruit Info")
         }
-//        Text(
-//            text = output
-//        )
-//        OutlinedTextField(
-//            value = promptAI,
-//            onValueChange = { promptAI = it },
-//            label = { Text("AI Input") }
-//        )
-//        Button(
-//            onClick = {
-//                genAiViewModel.sendPrompt(promptAI)
-//            },
-//            enabled = promptAI.isNotEmpty()
-//        ) {
-//            Text("gen ai button")
-//        }
         if (uiFruitState is UiState.Loading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
         } else {

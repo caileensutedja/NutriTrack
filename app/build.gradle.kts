@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
 
     id("com.google.devtools.ksp")
 }
@@ -38,10 +39,14 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
 dependencies {
+    // For Auth Manager
+//    implementation "androidx.datastore:datastore-preferences:1.0.0"
+
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     // Retrofit with Scalar Converter
@@ -49,6 +54,7 @@ dependencies {
 
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.generativeai)
 
     val room_version = "2.6.1"
     implementation("androidx.room:room-runtime:$room_version")
