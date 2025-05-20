@@ -16,7 +16,12 @@ class PatientViewModel (application: Application): AndroidViewModel(application)
     //Handles all data operations
     private val repository: PatientRepository = PatientRepository(application.applicationContext)
 
-    var totalScore = mutableStateOf<String?>(null)
+    var totalScore = mutableStateOf<String>("")
+    var name = mutableStateOf<String>("")
+    var phoneNumber = mutableStateOf<String>("")
+    var password = mutableStateOf<String>("")
+
+
     /**
      * Check the initial database, if empty, call the repo.
      */
@@ -45,22 +50,32 @@ class PatientViewModel (application: Application): AndroidViewModel(application)
     /**
      * Gets the phone number that matches the user ID.
      */
-     suspend fun getPhoneById(userId: String): String {
-        return repository.getPhoneById(userId)
+    fun getPhoneById(userId: String) {
+        viewModelScope.launch {
+            val score = repository.getPhoneById(userId)
+            phoneNumber.value = score
+        }
     }
 
     /**
      * Gets the name that matches the user ID.
      */
-    suspend fun getNameById(userId: String): String {
-        return repository.getNameById(userId)
+    fun getNameById(userId: String) {
+        viewModelScope.launch {
+            val score = repository.getNameById(userId)
+            name.value = score
+        }
     }
+
 
     /**
      * Checks if the password matches the user ID.
      */
-    suspend fun getPasswordById(userId: String) : String {
-        return repository.getPasswordById(userId)
+    fun getPasswordById(userId: String) {
+        viewModelScope.launch {
+            val score = repository.getPasswordById(userId)
+            password.value = score
+        }
     }
 
     /**
@@ -73,9 +88,6 @@ class PatientViewModel (application: Application): AndroidViewModel(application)
     /**
      * Gets the total score that matches the user ID.
      */
-//    suspend fun getTotalScoreById(userId: String): String {
-//        return repository.getTotalScoreById(userId)
-//    }
     fun getTotalScoreById(userId: String) {
         viewModelScope.launch {
             val score = repository.getTotalScoreById(userId)

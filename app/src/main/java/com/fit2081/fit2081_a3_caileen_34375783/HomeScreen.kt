@@ -234,17 +234,16 @@ fun MyNavHost(
         }
         composable("Insights") {
             Log.d("debug navhost homescreen", "in insights comp")
-            InsightsScreen(navController)
+            InsightsScreen(navController, patientViewModel)
         }
         composable("NutriCoach") {
             Log.d("debug navhost homescreen", "in nutri comp")
-
-//            NutriCoachScreen(navController)
+            NutriCoachPage(navController, patientViewModel)
             // To be implemented next assignment: NutriCoach Screen
         }
         composable("Settings") {
             Log.d("debug navhost homescreen", "in settings comp")
-
+            SettingsPage(navController, patientViewModel)
             // To be implemented next assignment: Settings Screen
         }
 

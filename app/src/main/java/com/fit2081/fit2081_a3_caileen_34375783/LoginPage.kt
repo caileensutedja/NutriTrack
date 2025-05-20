@@ -86,7 +86,8 @@ class LoginPage : ComponentActivity() {
 fun LoginScreen(
     modifier: Modifier = Modifier,
     patientViewModel: PatientViewModel,
-    goToRegisterScreen: () -> Unit) {
+    goToRegisterScreen: () -> Unit)
+{
     //Variables
     var userId by remember { mutableStateOf("") }
     var userPassword by remember { mutableStateOf("") }
@@ -96,7 +97,7 @@ fun LoginScreen(
     var passwordPresent by remember { mutableStateOf(false) }
     var idPresent by remember { mutableStateOf(false) }
 
-    var passwordFromDB by remember { mutableStateOf("") }
+//    var passwordFromDB by remember { mutableStateOf("") }
 
     // Boolean where true is showing the DropdownMenu and false is closing it.
     var expanded by remember { mutableStateOf(false) }
@@ -108,9 +109,12 @@ fun LoginScreen(
     }
     LaunchedEffect(userId) {
         if (userId.isNotEmpty()) {
-            passwordFromDB = patientViewModel.getPasswordById(userId)
+            patientViewModel.getPasswordById(userId)
         }
     }
+    var passwordFromDB by patientViewModel.password
+
+    Log.d("debug login page", "here pass: " + passwordFromDB)
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -283,8 +287,10 @@ fun RegisterScreen(modifier: Modifier = Modifier,
     }
     LaunchedEffect(userId) {
         if (userId.isNotEmpty()) {
-            phoneFromDB = patientViewModel.getPhoneById(userId)
-            passwordFromDB = patientViewModel.getPasswordById(userId)
+            patientViewModel.getPhoneById(userId)
+            var phoneFromDB by patientViewModel.phoneNumber
+            patientViewModel.getPasswordById(userId)
+            var passwordFromDB by patientViewModel.password
         }
     }
     Surface(

@@ -6,10 +6,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -18,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -27,9 +33,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -40,6 +49,10 @@ import com.fit2081.fit2081_a3_caileen_34375783.GenAI.UiState
 import com.fit2081.fit2081_a3_caileen_34375783.patient.PatientViewModel
 //import com.fit2081.fit2081_a3_caileen_34375783.network.uiState
 import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
+import android.util.Log
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.HorizontalDivider
+
 
 class NutriCoachScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,140 +83,68 @@ class NutriCoachScreen : ComponentActivity() {
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun NutriCoachPage(
-//    fruitAiViewModel: com.fit2081.fit2081_a3_caileen_34375783.FruitAPI.FruityAIViewModel = viewModel(),
-    genAiViewModel: GenAIViewModel = viewModel()
-) {
-    var fruitName by remember { mutableStateOf("") }
-//    val placeholderAIPrompt = stringResource(R.string.prompt_placeholder)
-    var placeholderAIPrompt by remember { mutableStateOf("") }
-    var placeholderAIResult by remember { mutableStateOf("") }
-    var promptAI by remember { mutableStateOf("") }
-    var resultAI by remember { mutableStateOf("") }
-
-//    val placeholderAIPrompt = stringResource(R.string.prompt_placeholder)
-//    val placeholderAIResult = stringResource(R.string.results_placeholder)
-//    var prompt by rememberSaveable { mutableStateOf(placeholderAIPrompt) }
-//    var result by rememberSaveable { mutableStateOf(placeholderAIResult) }
-
-    val coroutineScope = rememberCoroutineScope()
-//    var repository: FruitRepository = FruitRepository()
-//    val uiFruitState by fruitAiViewModel.uiState.collectAsState()
-    val uiAIState by genAiViewModel.uiState.collectAsState()
-//    var AIResponse by rememberSaveable { mutableStateOf(placeholderResult) }
-
-//    var fruit data result
-
+fun NutriCoachPage(navController: NavHostController,
+                   patientViewModel: PatientViewModel) {
     Column(
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth(),
-//        horizontalAlignment = Alignment.CenterHorizontally,
-//        verticalArrangement = Arrangement.spacedBy(8.dp)
+        modifier = Modifier.fillMaxHeight().fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-//        OutlinedTextField(
-//            value = fruitName,
-//            onValueChange = { fruitName = it },
-//            label = { Text("Base Currency") }
-//        )
-//        Button(
-//            onClick = {
-//                fruitAiViewModel.sendPrompt(fruitName)
-//            }
-//        ) {
-//            Text("Get Rate")
-//        }
-        OutlinedTextField(
-            value = promptAI,
-            onValueChange = { promptAI = it },
-            label = { Text("AI Input") }
+        Spacer(modifier = Modifier.height(30.dp))
+        Text(
+            text = "NutriCoach",
+            fontSize = 25.sp,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold,
         )
-        Button(
-            onClick = {
-                genAiViewModel.sendPrompt(promptAI)
-            },
-            enabled = promptAI.isNotEmpty()
-        ) {
-            Text("gen ai button")
-        }
-        if (uiAIState is UiState.Loading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-        } else {
-            var textColor = MaterialTheme.colorScheme.onSurface
-            if (uiAIState is UiState.Error) {
-                textColor = MaterialTheme.colorScheme.error
-                resultAI = (uiAIState as UiState.Error).errorMessage
-            } else if (uiAIState is UiState.Success) {
-                textColor = MaterialTheme.colorScheme.onSurface
-                resultAI = (uiAIState as UiState.Success).outputText
-            }
-            val scrollState = rememberScrollState()
-            Text(
-                text = resultAI,
-                textAlign = TextAlign.Start,
-                color = textColor,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(16.dp)
-                    .fillMaxSize()
-                    .verticalScroll(scrollState)
-            )
-        }
+        Spacer(modifier = Modifier.height(10.dp))
+        FruityUIScreen(modifier = Modifier.fillMaxHeight(0.4f))
+        Spacer(modifier = Modifier.height(10.dp))
+        HorizontalDivider()
+        Spacer(modifier = Modifier.height(10.dp))
+        GenAIScreen(modifier = Modifier.fillMaxHeight(0.4f))
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun FruityUI(
-    fruitAiViewModel: FruityAIViewModel = viewModel(),
+fun FruityUIScreen(
+    modifier: Modifier = Modifier.fillMaxHeight(0.5f)
 ) {
-    var fruitName by remember { mutableStateOf("") }
-//    val placeholderAIPrompt = stringResource(R.string.prompt_placeholder)
-    var placeholderAIPrompt by remember { mutableStateOf("") }
-    var placeholderAIResult by remember { mutableStateOf("") }
-    var resultFruit by remember { mutableStateOf("") }
+    val fruitAiViewModel: FruityAIViewModel = viewModel()
 
-    val coroutineScope = rememberCoroutineScope()
+    var fruitName by remember { mutableStateOf("") }
+    var resultFruit by remember { mutableStateOf("") }
     val uiFruitState by fruitAiViewModel.uiState.collectAsState()
 
     Column(
         modifier = Modifier
             .padding(16.dp)
-            .fillMaxWidth(),
-//        horizontalAlignment = Alignment.CenterHorizontally,
-//        verticalArrangement = Arrangement.spacedBy(8.dp)
+            .fillMaxWidth()
+            .fillMaxHeight(0.5f)
     ) {
-        OutlinedTextField(
-            value = fruitName,
-            onValueChange = { fruitName = it },
-            label = { Text("Fruit Name") }
-        )
-        Button(
-            onClick = {
-                fruitAiViewModel.fetchFruitInfo(fruitName)
-            },
-            enabled = fruitName.isNotEmpty()
-        ) {
-            Text("Find Fruit Info")
+        Row(modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically) {
+            OutlinedTextField(
+                value = fruitName,
+                onValueChange = { fruitName = it },
+                modifier = Modifier.fillMaxWidth(0.7f),
+                label = { Text("Fruit Name") }
+            )
+            Spacer(modifier = Modifier.width(10.dp))
+            Button(
+                onClick = {
+                    fruitAiViewModel.fetchFruitInfo(fruitName)
+                },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = fruitName.isNotEmpty()
+            ) {
+                Text("Details",
+                    textAlign = TextAlign.Center)
+            }
         }
-//        Text(
-//            text = output
-//        )
-//        OutlinedTextField(
-//            value = promptAI,
-//            onValueChange = { promptAI = it },
-//            label = { Text("AI Input") }
-//        )
-//        Button(
-//            onClick = {
-//                genAiViewModel.sendPrompt(promptAI)
-//            },
-//            enabled = promptAI.isNotEmpty()
-//        ) {
-//            Text("gen ai button")
-//        }
+
         if (uiFruitState is UiState.Loading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
         } else {
@@ -216,6 +157,7 @@ fun FruityUI(
                 resultFruit = (uiFruitState as UiState.Success).outputText
             }
             val scrollState = rememberScrollState()
+            Log.d("STRING", "HERE: " + resultFruit)
             Text(
                 text = resultFruit,
                 textAlign = TextAlign.Start,
@@ -229,3 +171,63 @@ fun FruityUI(
         }
     }
 }
+
+
+//@Preview(showBackground = true)
+@Composable
+fun GenAIScreen(
+    modifier: Modifier
+) {
+    val genAiViewModel: GenAIViewModel = viewModel()
+    val uiState by genAiViewModel.uiState.collectAsState()
+
+
+    var prompt by remember { mutableStateOf("") }
+    prompt = "Generate a short encouraging message to help someone improve their fruit intake."
+    var result by remember { mutableStateOf("") }
+    Column(
+        modifier = Modifier.fillMaxSize()
+            .fillMaxHeight(0.5f)
+    ) {
+
+        Row(
+            modifier = Modifier.padding(all = 16.dp)
+        ) {
+            Button(
+                onClick = {
+                    genAiViewModel.sendPrompt( prompt)
+                },
+                enabled = prompt.isNotEmpty(),
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+            ) {
+                Text(text = "Motivational Message (AI)")
+            }
+        }
+
+        if (uiState is UiState.Loading) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+        } else {
+            var textColor = MaterialTheme.colorScheme.onSurface
+            if (uiState is UiState.Error) {
+                textColor = MaterialTheme.colorScheme.error
+                result = (uiState as UiState.Error).errorMessage
+            } else if (uiState is UiState.Success) {
+                textColor = MaterialTheme.colorScheme.onSurface
+                result = (uiState as UiState.Success).outputText
+            }
+            val scrollState = rememberScrollState()
+            Text(
+                text = result,
+                textAlign = TextAlign.Start,
+                color = textColor,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(16.dp)
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+            )
+        }
+    }
+}
+
