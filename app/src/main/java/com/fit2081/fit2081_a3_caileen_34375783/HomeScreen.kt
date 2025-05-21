@@ -56,6 +56,7 @@ import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
 import com.fit2081.fit2081_a3_caileen_34375783.patient.PatientViewModel
 import kotlin.reflect.typeOf
@@ -91,13 +92,8 @@ class HomeScreen : ComponentActivity() {
 @Composable
 fun HomePage(navController: NavHostController, patientViewModel: PatientViewModel) {
     val mContext = LocalContext.current
-    val mID = AuthManager.getPatientId()
-
-    if (mID is String) {
-        Log.d("debug", "it is a string ")
-        patientViewModel.getTotalScoreById(mID)
-    }
-    var totalScore by patientViewModel.totalScore
+    val mID = AuthManager.getPatientId().toString()
+    val patientDB by patientViewModel.getPatientById(mID).collectAsStateWithLifecycle(null)
 
     Column(
         modifier = Modifier
@@ -193,7 +189,7 @@ fun HomePage(navController: NavHostController, patientViewModel: PatientViewMode
                 modifier = Modifier.fillMaxWidth(0.7f)
             )
 
-            Text(text = totalScore + "/100",
+            Text(text = patientDB?.totalScore + "/100",
             color = Color.Green,
             fontWeight = FontWeight.Bold
         )

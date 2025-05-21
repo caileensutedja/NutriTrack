@@ -43,6 +43,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
@@ -83,13 +84,19 @@ class SettingsScreen : ComponentActivity() {
 fun SettingsPage(navHostController: NavHostController, patientViewModel: PatientViewModel){
 //fun SettingsPage(){
     var context = LocalContext.current
-    val mID = AuthManager.getPatientId()
-    if (mID is String) {
-        patientViewModel.getNameById(mID)
-        patientViewModel.getPhoneById(mID)
-    }
-    var patientName by patientViewModel.name
-    var patientPhone by patientViewModel.phoneNumber
+
+    val mID = AuthManager.getPatientId().toString()
+//    if (mID is String) {
+//        patientViewModel.getNameById(mID)
+//        patientViewModel.getPhoneById(mID)
+//        patientViewModel.getPatientById(mID)
+//    }
+
+    val patientDB by patientViewModel.getPatientById(mID).collectAsStateWithLifecycle(null)
+//    var patientName by patientViewModel.name
+//    var patientPhone by patientViewModel.phoneNumber
+//    var patientInfo by patientViewModel.patient
+//    Log.d("debug ", "patient info is: " + patientDB?.userID)
 
     Column(
         modifier = Modifier
@@ -139,12 +146,12 @@ fun SettingsPage(navHostController: NavHostController, patientViewModel: Patient
 //                horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(0.dp)){
                 Text(
-                    text = "$patientName",
+                    text = "${patientDB?.patientName}",
                     fontSize = 15.sp,
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
-                    text = "$patientPhone",
+                    text = "${patientDB?.patientPhoneNumber}",
                     fontSize = 15.sp,
                 )
                 Spacer(modifier = Modifier.height(10.dp))

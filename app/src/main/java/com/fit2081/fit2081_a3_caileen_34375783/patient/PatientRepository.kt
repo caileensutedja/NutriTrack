@@ -32,9 +32,9 @@ class PatientRepository(applicationContext: Context) {
     /**
      * Gets patient by ID through Dao
      */
-    suspend fun getPatientById(id: String): Flow<Patient> {
-        return patientDao.getPatientById(id)
-    }
+    fun getPatientById(id: String): Flow<Patient> =
+        patientDao.getPatientById(id)
+
 
 //    /**
 //     * Deletes all patient through Dao
@@ -44,138 +44,12 @@ class PatientRepository(applicationContext: Context) {
     /**
      * Gets all the current patient userIds.
      */
-    suspend fun getAllUserIds(): List<String> {
-        Log.d("debug", "list of patients: " + patientDao.getAllUserIds().first())
+    fun getAllUserIds(): Flow<List<String>> =
+//        Log.d("debug", "list of patients: " + patientDao.getAllUserIds().first())
         // Just return the first emission
-        return patientDao.getAllUserIds().first()
-    }
+        patientDao.getAllUserIds()
+//    }
 
-
-    /**
-     * Gets the phone number based on ID.
-     */
-    suspend fun getPhoneById(userId: String): String {
-        return patientDao.getPhoneById(userId).first()
-    }
-
-    /**
-     * Gets the name based on ID.
-     */
-    suspend fun getNameById(userId: String): String {
-        return patientDao.getNameById(userId).first()
-    }
-
-    /**
-     * Checks if the password matches the user ID.
-     */
-    suspend fun getPasswordById(userId: String):String {
-        return patientDao.getPasswordById(userId).first()
-    }
-
-    /**
-     * Gets the patient sex based on ID.
-     */
-    suspend fun getPatientSexId(userId: String): String {
-        return patientDao.getPatientSexById(userId).first()
-    }
-
-    /**
-     * Gets the total score based on ID.
-     */
-    suspend fun getTotalScoreById(userId: String): String {
-        return patientDao.getTotalScoreById(userId).first()
-    }
-
-    /**
-     * Gets the discretionary score based on ID.
-     */
-    suspend fun getDiscretionaryScoreById(userId: String): String {
-        return patientDao.getDiscretionaryScoreById(userId).first()
-    }
-
-    /**
-     * Gets the vegetable score based on ID.
-     */
-    suspend fun getVegetableScoreById(userId: String): String {
-        return patientDao.getVegetableScoreById(userId).first()
-    }
-
-    /**
-     * Gets the fruit score based on ID.
-     */
-    suspend fun getFruitScoreById(userId: String): String {
-        return patientDao.getFruitScoreById(userId).first()
-    }
-
-    /**
-     * Gets the grains and cereal score based on ID.
-     */
-    suspend fun getGrainsAndCerealScoreById(userId: String): String {
-        return patientDao.getGrainsAndCerealScoreById(userId).first()
-    }
-
-    /**
-     * Gets the whole grains score based on ID.
-     */
-    suspend fun getWholeGrainsScoreById(userId: String): String {
-        return patientDao.getWholeGrainsScoreById(userId).first()
-    }
-
-    /**
-     * Gets the meal and alt score based on ID.
-     */
-    suspend fun getMeatAndAltScoreById(userId: String): String {
-        return patientDao.getMeatAndAltScoreById(userId).first()
-    }
-
-    /**
-     * Gets the dairy and alt score based on ID.
-     */
-    suspend fun getDairyAndALtScoreById(userId: String): String {
-        return patientDao.getDairyAndALtScoreById(userId).first()
-    }
-
-    /**
-     * Gets the sodium score based on ID.
-     */
-    suspend fun getSodiumScoreById(userId: String): String {
-        return patientDao.getSodiumScoreById(userId).first()
-    }
-
-    /**
-     * Gets the alcohol score based on ID.
-     */
-    suspend fun getAlcoholScoreById(userId: String): String {
-        return patientDao.getAlcoholScoreById(userId).first()
-    }
-
-    /**
-     * Gets the water score based on ID.
-     */
-    suspend fun getWaterScoreById(userId: String): String {
-        return patientDao.getWaterScoreById(userId).first()
-    }
-
-    /**
-     * Gets the sugar score based on ID.
-     */
-    suspend fun getSugarScoreById(userId: String): String {
-        return patientDao.getSugarScoreById(userId).first()
-    }
-
-    /**
-     * Gets the saturated fat score based on ID.
-     */
-    suspend fun getSaturatedFatScoreById(userId: String): String {
-        return patientDao.getSaturatedFatScoreById(userId).first()
-    }
-
-    /**
-     * Gets the unsaturated fat score based on ID.
-     */
-    suspend fun getUnsaturatedFatScoreById(userId: String): String {
-        return patientDao.getUnsaturatedFatScoreById(userId).first()
-    }
 
     /**
      * Sets name and phone number for a userID.

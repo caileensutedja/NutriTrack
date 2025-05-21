@@ -47,6 +47,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
 import kotlinx.coroutines.launch
 
@@ -91,30 +92,19 @@ fun LoginScreen(
     //Variables
     var userId by remember { mutableStateOf("") }
     var userPassword by remember { mutableStateOf("") }
-    var idList by remember { mutableStateOf<List<String>>(emptyList()) }
+
+    // Obtaining State values from the viewmodel
+    val patientDB by patientViewModel.getPatientById(userId).collectAsStateWithLifecycle(null)
+    val idList by patientViewModel.getAllUserIds().collectAsStateWithLifecycle(emptyList())
 
     // Validation variables
     var passwordPresent by remember { mutableStateOf(false) }
     var idPresent by remember { mutableStateOf(false) }
 
-//    var passwordFromDB by remember { mutableStateOf("") }
-
     // Boolean where true is showing the DropdownMenu and false is closing it.
     var expanded by remember { mutableStateOf(false) }
     val mContext = LocalContext.current
 
-    // Is ran once only.
-    LaunchedEffect(Unit) {
-        idList = patientViewModel.getAllUserIds()
-    }
-    LaunchedEffect(userId) {
-        if (userId.isNotEmpty()) {
-            patientViewModel.getPasswordById(userId)
-        }
-    }
-    var passwordFromDB by patientViewModel.password
-
-    Log.d("debug login page", "here pass: " + passwordFromDB)
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -208,8 +198,8 @@ fun LoginScreen(
             Button(
                 onClick = {
                     if (idPresent && passwordPresent) {
-                        if (passwordFromDB != "") {
-                            if (userPassword == passwordFromDB) {
+                        if (patientDB?.patientPassword!!.isNotEmpty()) {
+                            if (userPassword == patientDB?.patientPassword) {
                                 Toast.makeText(mContext, "Login Successful", Toast.LENGTH_LONG).show()
                                 //go to next page
                                 AuthManager.login(mContext, userId)
@@ -258,6 +248,8 @@ fun LoginScreen(
 fun RegisterScreen(modifier: Modifier = Modifier,
                    patientViewModel: PatientViewModel,
                    goToLoginScreen: () -> Unit) {
+    Log.d("debug regis", "initial regis func")
+
     //Variables
     var userId by remember { mutableStateOf("") }
     var userPassword by remember { mutableStateOf("") }
@@ -265,34 +257,19 @@ fun RegisterScreen(modifier: Modifier = Modifier,
     var userPhone by remember { mutableStateOf("") }
     var userName by remember { mutableStateOf("") }
 
+    // Obtaining State values from the viewmodel
+    val patientDB by patientViewModel.getPatientById(userId).collectAsStateWithLifecycle(null)
+    val idList by patientViewModel.getAllUserIds().collectAsStateWithLifecycle(emptyList())
+
     // For validation
     var phoneNoError by remember { mutableStateOf(false) }
     var matchPassword by remember { mutableStateOf(false) }
     var hasName by remember { mutableStateOf(false) }
 
-    // Information from DB
-    var idList by remember { mutableStateOf<List<String>>(emptyList()) }
-    var phoneFromDB by remember { mutableStateOf("") }
-    var passwordFromDB by remember { mutableStateOf("") }
-
-//    val matchResult by patientViewModel.matchResult.collectAsState()
-
     // Boolean where true is showing the DropdownMenu and false is closing it.
     var expanded by remember { mutableStateOf(false) }
     val mContext = LocalContext.current
 
-    // Is ran once only.
-    LaunchedEffect(Unit) {
-        idList = patientViewModel.getAllUserIds()
-    }
-    LaunchedEffect(userId) {
-        if (userId.isNotEmpty()) {
-            patientViewModel.getPhoneById(userId)
-            var phoneFromDB by patientViewModel.phoneNumber
-            patientViewModel.getPasswordById(userId)
-            var passwordFromDB by patientViewModel.password
-        }
-    }
     Surface(
     modifier = Modifier.fillMaxSize()
     ) {
@@ -303,12 +280,15 @@ fun RegisterScreen(modifier: Modifier = Modifier,
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+            Log.d("debug regis", "initial regis 1")
+
             Text(
                 text = "Register",
                 fontSize = 35.sp,
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(20.dp))
+            Log.d("debug regis", "initial regis 2")
 
             /**
              * ID Section
@@ -326,6 +306,8 @@ fun RegisterScreen(modifier: Modifier = Modifier,
                 // Prevents typing in the input
                 readOnly = true
             )
+            Log.d("debug regis", "initial regis 3")
+
             //Dropdown menu
             DropdownMenu(
                 expanded = expanded,
@@ -349,7 +331,9 @@ fun RegisterScreen(modifier: Modifier = Modifier,
                     modifier = Modifier.padding(start = 16.dp, top = 4.dp)
                 )
             }
-            Spacer(modifier = Modifier.height(5.dp))
+                Log.d("debug regis", "initial regis 4 ")
+
+                Spacer(modifier = Modifier.height(5.dp))
 
             /**
              * Phone Number Section
@@ -357,15 +341,17 @@ fun RegisterScreen(modifier: Modifier = Modifier,
             OutlinedTextField(
                 value = userPhone,
                 onValueChange = {
-                    userPhone = it
-                    phoneNoError = it.length == 11
+                    // Ensures it only allows numbers
+                    if (it.all { char -> char.isDigit() }) {
+                        userPhone = it
+                        phoneNoError = it.length == 11
+                    }
                 },
                 label = { Text(text = "Phone number") },
                 modifier = Modifier.fillMaxWidth(),
                 // Ensures only numbers can be added
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Number
-                ),
+                keyboardOptions = KeyboardOptions
+                    (keyboardType = KeyboardType.Number),
                 singleLine = true
             )
             // Phone number input validation.
@@ -376,7 +362,9 @@ fun RegisterScreen(modifier: Modifier = Modifier,
                     modifier = Modifier.padding(start = 16.dp, top = 4.dp)
                 )
             }
-            Spacer(modifier = Modifier.height(5.dp))
+                Log.d("debug regis", "initial regis 5")
+
+                Spacer(modifier = Modifier.height(5.dp))
 
             /**
              * Name Section
@@ -454,11 +442,11 @@ fun RegisterScreen(modifier: Modifier = Modifier,
             val coroutineScope = rememberCoroutineScope()
             Button(
                 onClick = {
-                    if (passwordFromDB == ""){
+                    if (patientDB?.patientPassword.isNullOrEmpty()){
                     if (phoneNoError && matchPassword && hasName) {
 //                        Log.d("debug", "passes first if with id and phone: " + userId + " & " + userPhone)
 //                        Log.d("debug", "now phone db and phone " + phoneFromDB + " and " + userPhone)
-                        if (phoneFromDB == userPhone) {
+                        if (patientDB?.patientPhoneNumber == userPhone) {
                             Log.d("debug", "passes second if")
                             //Insert pass and name in db
                             coroutineScope.launch {
