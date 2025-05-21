@@ -16,13 +16,6 @@ class PatientViewModel (application: Application): AndroidViewModel(application)
     //Handles all data operations
     private val repository: PatientRepository = PatientRepository(application.applicationContext)
 
-//    var totalScore = mutableStateOf<String>("")
-//    var name = mutableStateOf<String>("")
-//    var phoneNumber = mutableStateOf<String>("")
-//    var password = mutableStateOf<String>("")
-
-//    private var _patient = MutableStateFlow<Patient?>(null)
-//    var patient: StateFlow<Patient?> get() = _patient
     var patient = mutableStateOf<Patient?>(null)
 
 
@@ -30,9 +23,7 @@ class PatientViewModel (application: Application): AndroidViewModel(application)
      * Check the initial database, if empty, call the repo.
      */
     fun initialDB(context: Context){
-//        Log.d("DEBUG", "ran through initialDB in ViewModel")
         viewModelScope.launch {
-//            Log.d("DEBUG", "launching through initialDB in ViewModel")
             repository.loadDB(context = context, "data.csv")
         }
     }

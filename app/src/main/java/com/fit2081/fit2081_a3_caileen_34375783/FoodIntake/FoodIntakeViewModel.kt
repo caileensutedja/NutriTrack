@@ -1,12 +1,8 @@
 package com.fit2081.fit2081_a3_caileen_34375783.FoodIntake
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.fit2081.fit2081_a3_caileen_34375783.patient.Patient
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
@@ -21,11 +17,6 @@ class FoodIntakeViewModel(application: Application) : AndroidViewModel(applicati
 
     private val foodIntakeRepository: FoodIntakeRepository =
         FoodIntakeRepository(application.applicationContext)
-//
-//    /**
-//     * Flow of all quiz attempts.
-//     */
-//    val allAttempts: Flow<List<QuizAttempt>> = foodIntakeRepository.allAttempts;
 
     /**
      * Inserts a new quiz attempt into the database.
@@ -43,21 +34,5 @@ class FoodIntakeViewModel(application: Application) : AndroidViewModel(applicati
     fun getQuizAttemptByPatientId(patientId: String):
             Flow<FoodIntake> = foodIntakeRepository.getQuizAttemptByPatientId(patientId)
 
-//    /**
-//     * Get the patient by ID from the database
-//     */
-//    fun getAttemptByPatientId(userId: String) :
-//            Flow<Patient> = foodIntakeRepository.getAttemptByPatientId(userId)
-
-//
-//    /**
-//     *
-//     */
-//    class FoodIntakeViewModelFactory(context: Context) : ViewModelProvider.Factory {
-//        private val context = context.applicationContext
-//        // Use application context to avoid memory leaks
-//        override fun <T : ViewModel> create(modelClass: Class<T>): T =
-//            FoodIntakeViewModel(context) as T
-//    }
 }
 

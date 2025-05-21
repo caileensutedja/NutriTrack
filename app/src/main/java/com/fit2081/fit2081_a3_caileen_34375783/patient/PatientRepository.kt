@@ -2,7 +2,6 @@ package com.fit2081.fit2081_a3_caileen_34375783.patient
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import com.fit2081.fit2081_a3_caileen_34375783.data.AppDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -17,8 +16,6 @@ class PatientRepository(applicationContext: Context) {
     // Get database instance and insert the repo
     val database = AppDatabase.getDatabase(applicationContext)
     val patientDao = database.patientDao()
-    // Stores the current list of patients
-//    val allPatients: Flow<List<Patient>> = patientDao.getAllPatients()
 
     /**
      * Inserts the patient calling Dao
@@ -35,21 +32,11 @@ class PatientRepository(applicationContext: Context) {
     fun getPatientById(id: String): Flow<Patient> =
         patientDao.getPatientById(id)
 
-
-//    /**
-//     * Deletes all patient through Dao
-//     */
-//    suspend fun deleteAllPatients() = patientDao.deleteAllPatients()
-
     /**
      * Gets all the current patient userIds.
      */
     fun getAllUserIds(): Flow<List<String>> =
-//        Log.d("debug", "list of patients: " + patientDao.getAllUserIds().first())
-        // Just return the first emission
         patientDao.getAllUserIds()
-//    }
-
 
     /**
      * Sets name and phone number for a userID.

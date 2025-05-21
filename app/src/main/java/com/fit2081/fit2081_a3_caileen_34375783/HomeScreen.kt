@@ -1,6 +1,5 @@
 package com.fit2081.fit2081_a3_caileen_34375783
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
