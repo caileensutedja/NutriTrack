@@ -55,11 +55,9 @@ import androidx.navigation.compose.rememberNavController
 import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
 import android.util.Log
 import androidx.activity.viewModels
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
 import com.fit2081.fit2081_a3_caileen_34375783.patient.PatientViewModel
-import kotlin.reflect.typeOf
 
 class HomeScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -233,7 +231,7 @@ fun MyNavHost(
             InsightsScreen(navController, patientViewModel)
         }
         composable("NutriCoach") {
-            Log.d("debug navhost homescreen", "in nutri comp")
+//            Log.d("debug navhost homescreen", "in nutri comp")
             NutriCoachPage(navController, patientViewModel)
             // To be implemented next assignment: NutriCoach Screen
         }
