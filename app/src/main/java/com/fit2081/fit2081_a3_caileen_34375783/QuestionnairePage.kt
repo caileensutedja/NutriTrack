@@ -1,7 +1,6 @@
 package com.fit2081.fit2081_a3_caileen_34375783
 
 import android.app.TimePickerDialog
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -20,7 +19,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -61,11 +59,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fit2081.fit2081_a3_caileen_34375783.FoodIntake.FoodIntake
 import com.fit2081.fit2081_a3_caileen_34375783.FoodIntake.FoodIntakeViewModel
 import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
-import com.fit2081.fit2081_a3_caileen_34375783.patient.PatientViewModel
 import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
@@ -428,7 +422,7 @@ fun QuestionnaireScreen(foodIntakeViewModel: FoodIntakeViewModel){
                 // Validate: No empty Strings
                 if (mSelectedPersona.isNotEmpty() && mTimeMeal.value.isNotEmpty() && mTimeSleep.value.isNotEmpty() && mTimeWakeUp.value.isNotEmpty()){
                     // Validate: TimePickers reasonable time. Eat should be after waking up and before sleeping.
-//                    if (validateTime(mTimeWakeUp.value, mTimeSleep.value, mTimeMeal.value)) {
+                    if (validateTime(mTimeSleep.value, mTimeWakeUp.value, mTimeMeal.value)) {
                     var foodIntakeAnswer: FoodIntake = FoodIntake(
                         userID = AuthManager.getPatientId().toString(),
                         fruit =  mCheckBoxFruits.value,
@@ -445,22 +439,13 @@ fun QuestionnaireScreen(foodIntakeViewModel: FoodIntakeViewModel){
                         timeSleep = mTimeSleep.value,
                         timeWakeup = mTimeWakeUp.value
                     )
+
                     foodIntakeViewModel.attemptFoodIntake(foodIntakeAnswer)
-//                    if (foodIntakeAttempt != null) {
-//
-//                    }
-//                        CoroutineScope(Dispatchers.IO).launch {
-//                            foodIntakeViewModel.attemptFoodIntake(foodIntakeAnswer)
-//                        }
 
-                        Log.d("debug questionnaire", "before")
-
-                        mContext.startActivity(Intent(mContext, InsightsPage::class.java))
-                        Log.d("debug questionnaire", "after")
-//                    } else{
-//                        Toast.makeText(mContext, "Please choose reasonable timings, where meals are after waking up and before sleeping.", Toast.LENGTH_LONG).show()
-//
-//                    }
+                    mContext.startActivity(Intent(mContext, InsightsPage::class.java))
+                    } else{
+                        Toast.makeText(mContext, "Please choose reasonable timings, where meals are after waking up and before sleeping.", Toast.LENGTH_LONG).show()
+                    }
             } else {
                     // Error message to fill in the questionnaire.
                     Toast.makeText(mContext, "Please complete all parts of the questionnaire.", Toast.LENGTH_LONG).show()
@@ -539,52 +524,26 @@ fun timePickerFun(mTime: MutableState<String>): TimePickerDialog {
         // Invoke listener when time is set
         { _, mHour: Int, mMinute: Int ->
             // initial hour and minute
-            mTime.value = "$mHour:$mMinute"
+            mTime.value = String.format("%02d:%02d", mHour, mMinute)
         // To user 24h format or not
         }, mHour, mMinute, false
     )
 }
-
-//fun validateTime(wakeup, sleep, meal) {
-////    fun validateTimes(sleepTimeStr: String, wakeTimeStr: String, eatTimeStr: String): Boolean {
-//        val sleepTime = parseTime(sleep)
-//        val wakeTime = parseTime(wakeup)
-//        val eatTime = parseTime(meal)
-//
-//        if (sleepTime == wakeTime) return false
-//
-//        // Handle "sleep after midnight" case:
-//        val adjustedSleepTime = if (sleepTime.isBefore(wakeTime)) sleepTime.plusHours(24) else sleepTime
-//        val adjustedEatTime = if (eatTime.isBefore(wakeTime)) eatTime.plusHours(24) else eatTime
-//
-//        return eatTime.isAfter(wakeTime) && adjustedEatTime.isBefore(adjustedSleepTime)
-//    }
 
 fun validateTime(sleepTimeStr: String, wakeTimeStr: String, eatTimeStr: String): Boolean {
     val formatter = DateTimeFormatter.ofPattern("HH:mm")
     val sleepTime = LocalTime.parse(sleepTimeStr, formatter)
     val wakeTime = LocalTime.parse(wakeTimeStr, formatter)
     val eatTime = LocalTime.parse(eatTimeStr, formatter)
-    Log.d("TIMEVALI", "TIMEVALI sleep time is: " + sleepTime)
-    Log.d("TIMEVALI", "TIMEVALI wake time is: " + wakeTime)
-    Log.d("TIMEVALI", "TIMEVALI eat time is: " + eatTime)
 
-
-    // Is not possible to do this
-    if (sleepTime == wakeTime) return false
+    // Logically not possible to do this
+    if (sleepTime == wakeTime || sleepTime == eatTime || wakeTime == eatTime) return false
 
     return if (sleepTime.isBefore(wakeTime)) {
-        Log.d("TIMEVALI", "TIMEVALI sleep is before wakeup - midnight sleep am")
-        Log.d("TIMEVALI", "TIMEVALI sleep is before wakeup - eatTime.isBefore(sleepTime): " + eatTime.isBefore(sleepTime))
-        Log.d("TIMEVALI", "TIMEVALI sleep is before wakeup - eatTime.isAfter(wakeTime) " + eatTime.isAfter(wakeTime))
         // Sleep and wake on the same day - sleeps on the am
         eatTime.isBefore(sleepTime) || eatTime.isAfter(wakeTime)
     } else {
-        Log.d("TIMEVALI", "TIMEVALI sleep time is after wakeup - normal time")
-        Log.d("TIMEVALI", "TIMEVALI sleep time is after wakeup - eatTime.isAfter(wakeTime): " + eatTime.isAfter(wakeTime))
-        Log.d("TIMEVALI", "TIMEVALI sleep time is after wakeup - eatTime.isBefore(sleepTime): " + eatTime.isBefore(sleepTime))
-
-        // Sleep through midnight
-        eatTime.isAfter(wakeTime) && eatTime.isBefore(sleepTime).not()
+        // during the day - sleeps properly
+        eatTime.isAfter(wakeTime) && eatTime.isBefore(sleepTime)
     }
 }
