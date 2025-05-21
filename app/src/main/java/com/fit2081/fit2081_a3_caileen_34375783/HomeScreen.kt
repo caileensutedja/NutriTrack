@@ -104,7 +104,7 @@ fun HomePage(navController: NavHostController, patientViewModel: PatientViewMode
             fontSize = 17.sp,
             textAlign = TextAlign.Start)
         Text(
-            text = "$mID", // Prints the ID stored in AuthManager
+            text = "${patientDB?.patientName}", // Prints the ID stored in AuthManager
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Start

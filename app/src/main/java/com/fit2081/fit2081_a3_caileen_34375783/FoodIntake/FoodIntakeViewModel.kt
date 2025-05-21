@@ -1,9 +1,12 @@
 package com.fit2081.fit2081_a3_caileen_34375783.FoodIntake
 
+import android.app.Application
 import android.content.Context
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.fit2081.fit2081_a3_caileen_34375783.patient.Patient
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
@@ -14,10 +17,10 @@ import kotlinx.coroutines.launch
  *
  * @param context The application context.
  */
-class FoodIntakeViewModel(context: Context) : ViewModel() {
+class FoodIntakeViewModel(application: Application) : AndroidViewModel(application) {
 
     private val foodIntakeRepository: FoodIntakeRepository =
-        FoodIntakeRepository(context)
+        FoodIntakeRepository(application.applicationContext)
 //
 //    /**
 //     * Flow of all quiz attempts.
@@ -28,8 +31,8 @@ class FoodIntakeViewModel(context: Context) : ViewModel() {
      * Inserts a new quiz attempt into the database.
      * @param quizAttempt The quiz attempt to be inserted.
      */
-    fun insertFoodIntakeAttempt(foodIntake: FoodIntake) {
-        viewModelScope.launch { foodIntakeRepository.insertFI(foodIntake) }
+    fun attemptFoodIntake(foodIntake: FoodIntake) {
+        viewModelScope.launch { foodIntakeRepository.attemptFoodIntake(foodIntake) }
     }
 
     /**
@@ -38,16 +41,23 @@ class FoodIntakeViewModel(context: Context) : ViewModel() {
      * @return A Flow emitting a list of quiz attempts for the given student ID.
      */
     fun getQuizAttemptByPatientId(patientId: String):
-            Flow<List<FoodIntake>> = foodIntakeRepository.getQuizAttemptByPatientId(patientId)
+            Flow<FoodIntake> = foodIntakeRepository.getQuizAttemptByPatientId(patientId)
 
-    /**
-     *
-     */
-    class FoodIntakeViewModelFactory(context: Context) : ViewModelProvider.Factory {
-        private val context = context.applicationContext
-        // Use application context to avoid memory leaks
-        override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            FoodIntakeViewModel(context) as T
-    }
+//    /**
+//     * Get the patient by ID from the database
+//     */
+//    fun getAttemptByPatientId(userId: String) :
+//            Flow<Patient> = foodIntakeRepository.getAttemptByPatientId(userId)
+
+//
+//    /**
+//     *
+//     */
+//    class FoodIntakeViewModelFactory(context: Context) : ViewModelProvider.Factory {
+//        private val context = context.applicationContext
+//        // Use application context to avoid memory leaks
+//        override fun <T : ViewModel> create(modelClass: Class<T>): T =
+//            FoodIntakeViewModel(context) as T
+//    }
 }
 
