@@ -2,6 +2,7 @@ package com.fit2081.fit2081_a3_caileen_34375783
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,11 +10,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
@@ -26,8 +30,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,26 +40,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.fit2081.fit2081_a3_caileen_34375783.patient.PatientViewModel
-import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
-import android.util.Log
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
-import kotlinx.coroutines.launch
+import com.fit2081.fit2081_a3_caileen_34375783.patient.PatientViewModel
+import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
 
 
 class LoginPage : ComponentActivity() {
     // Patient View Model
-    val patientViewModel: PatientViewModel by viewModels()
-    val showModal = false
+    private val patientViewModel: PatientViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -65,13 +64,11 @@ class LoginPage : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     if (showLoginScreen) {
                       LoginScreen(
-                          modifier = Modifier.padding(innerPadding),
                           patientViewModel,
                           goToRegisterScreen = { showLoginScreen = false}
                       )
                     } else {
                         RegisterScreen(
-                            modifier = Modifier.padding(innerPadding),
                             patientViewModel,
                             goToLoginScreen = { showLoginScreen = true}
                         )
@@ -82,19 +79,16 @@ class LoginPage : ComponentActivity() {
     }
 }
 
-//@Preview(showBackground = true)
 @Composable
 fun LoginScreen(
-    modifier: Modifier = Modifier,
     patientViewModel: PatientViewModel,
-    goToRegisterScreen: () -> Unit)
-{
+    goToRegisterScreen: () -> Unit
+) {
     //Variables
     var userId by remember { mutableStateOf("") }
     var userPassword by remember { mutableStateOf("") }
 
     // Obtaining State values from the viewmodel
-    val patientDB by patientViewModel.getPatientById(userId).collectAsStateWithLifecycle(null)
     val idList by patientViewModel.getAllUserIds().collectAsStateWithLifecycle(emptyList())
 
     // Validation variables
@@ -103,7 +97,7 @@ fun LoginScreen(
 
     // Boolean where true is showing the DropdownMenu and false is closing it.
     var expanded by remember { mutableStateOf(false) }
-    val mContext = LocalContext.current
+    val context = LocalContext.current
 
     Surface(
         modifier = Modifier.fillMaxSize()
@@ -175,7 +169,7 @@ fun LoginScreen(
                 visualTransformation = PasswordVisualTransformation(),
                 singleLine = true
             )
-            if (userPassword.length < 1) {
+            if (userPassword.isEmpty()) {
                 Text(
                     text = "Please insert your password.",
                     color = MaterialTheme.colorScheme.error,
@@ -195,42 +189,43 @@ fun LoginScreen(
             /**
              * Continue Button to Log in
              */
+            val loginResult by patientViewModel.loginResult.collectAsStateWithLifecycle()
+
+            loginResult?.let { result ->
+                when (result) {
+                    is PatientViewModel.LoginResult.Success -> {
+                        Toast.makeText(context, "Login successful.", Toast.LENGTH_SHORT).show()
+                        AuthManager.login(context, result.patient.userID)
+                        context.startActivity(Intent(context, QuestionnairePage::class.java))
+                    }
+                    PatientViewModel.LoginResult.IncorrectPassword -> {
+                        Toast.makeText(context, "Incorrect password, please try again.", Toast.LENGTH_SHORT).show()
+                    }
+                    PatientViewModel.LoginResult.AccountNotClaimed -> {
+                        Toast.makeText(context, "Account not claimed. Please register.", Toast.LENGTH_SHORT).show()
+                    }
+                    // Assuming they can choose an invalid input (real life).
+                    PatientViewModel.LoginResult.AccountNotFound -> {
+                        Toast.makeText(context, "User ID not found.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                // Reset result so it doesn't keep firing
+                patientViewModel.loginResult.value = null
+            }
+
             Button(
                 onClick = {
-                    if (idPresent && passwordPresent) {
-                        if (patientDB?.patientPassword!!.isNotEmpty()) {
-                            if (userPassword == patientDB?.patientPassword) {
-                                Toast.makeText(mContext, "Login Successful", Toast.LENGTH_LONG).show()
-                                //go to next page
-                                AuthManager.login(mContext, userId)
-                                Log.d("debug login", "auth manager rn: " + AuthManager.getPatientId())
-
-                                /**
-                                 * if they have data in the questionnaire db then go to main page
-                                 * else go to questionnaire page
-                                 */
-                                mContext.startActivity(
-                                    Intent(
-                                        mContext,
-                                        QuestionnairePage::class.java
-                                    )
-                                )
-                            } else {
-                                Toast.makeText(mContext, "Please try again, ID and password does not match.", Toast.LENGTH_LONG).show()
-                            }
-                        } else {
-                            Toast.makeText(mContext, "Account does not exist, please claim your account.", Toast.LENGTH_LONG).show()
-                        }
+                    if (userId.isNotEmpty() && userPassword.isNotEmpty()) {
+                        patientViewModel.login(userId, userPassword)
                     } else {
-                        Toast.makeText(mContext, "Please fill in your credentials.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Please fill in your credentials.", Toast.LENGTH_SHORT).show()
                     }
                 }
             ) {
                 Text("Continue")
                     }
             Spacer(modifier = Modifier.height(10.dp))
-
-
             /**
              * Register Button
              */
@@ -245,30 +240,25 @@ fun LoginScreen(
 }
 
 @Composable
-fun RegisterScreen(modifier: Modifier = Modifier,
-                   patientViewModel: PatientViewModel,
-                   goToLoginScreen: () -> Unit) {
+fun RegisterScreen(
+    patientViewModel: PatientViewModel,
+    goToLoginScreen: () -> Unit
+) {
     Log.d("debug regis", "initial regis func")
 
     //Variables
     var userId by remember { mutableStateOf("") }
-    var userPassword by remember { mutableStateOf("") }
-    var userConfirmPassword by remember { mutableStateOf("") }
     var userPhone by remember { mutableStateOf("") }
-    var userName by remember { mutableStateOf("") }
 
     // Obtaining State values from the viewmodel
-    val patientDB by patientViewModel.getPatientById(userId).collectAsStateWithLifecycle(null)
     val idList by patientViewModel.getAllUserIds().collectAsStateWithLifecycle(emptyList())
 
     // For validation
     var phoneNoError by remember { mutableStateOf(false) }
-    var matchPassword by remember { mutableStateOf(false) }
-    var hasName by remember { mutableStateOf(false) }
 
     // Boolean where true is showing the DropdownMenu and false is closing it.
     var expanded by remember { mutableStateOf(false) }
-    val mContext = LocalContext.current
+    val context = LocalContext.current
 
     Surface(
     modifier = Modifier.fillMaxSize()
@@ -331,9 +321,7 @@ fun RegisterScreen(modifier: Modifier = Modifier,
                     modifier = Modifier.padding(start = 16.dp, top = 4.dp)
                 )
             }
-                Log.d("debug regis", "initial regis 4 ")
-
-                Spacer(modifier = Modifier.height(5.dp))
+            Spacer(modifier = Modifier.height(5.dp))
 
             /**
              * Phone Number Section
@@ -362,68 +350,6 @@ fun RegisterScreen(modifier: Modifier = Modifier,
                     modifier = Modifier.padding(start = 16.dp, top = 4.dp)
                 )
             }
-                Log.d("debug regis", "initial regis 5")
-
-                Spacer(modifier = Modifier.height(5.dp))
-
-            /**
-             * Name Section
-             */
-            OutlinedTextField(
-                value = userName,
-                onValueChange = {
-                    userName = it
-                },
-                label = { Text(text = "Name") },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true
-            )
-            // Name input validation.
-            if (userName.length < 1) {
-                Text(
-                    text = "Please enter your name.",
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(start = 16.dp, top = 4.dp)
-                )
-            } else {
-                hasName = true
-            }
-            Spacer(modifier = Modifier.height(5.dp))
-
-            /**
-             * First Password Section
-             */
-            OutlinedTextField(
-                value = userPassword,
-                onValueChange = { userPassword = it },
-                label = { Text(text = "Password") },
-                modifier = Modifier.fillMaxWidth(),
-                visualTransformation = PasswordVisualTransformation(),
-                singleLine = true
-            )
-            Spacer(modifier = Modifier.height(5.dp))
-
-            OutlinedTextField(
-                value = userConfirmPassword,
-                onValueChange = { userConfirmPassword = it },
-                label = { Text(text = "Confirm password") },
-                modifier = Modifier.fillMaxWidth(),
-                visualTransformation = PasswordVisualTransformation(),
-                singleLine = true
-            )
-
-            if (userPassword != userConfirmPassword ||
-                userPassword.length == 0 || userConfirmPassword.length == 0
-            ) {
-                Text(
-                    text = "Your password does not match, please try again.",
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(start = 16.dp, top = 4.dp),
-                    textAlign = TextAlign.Center
-                )
-            } else {
-                matchPassword = true
-            }
 
             Spacer(modifier = Modifier.height(20.dp))
             Text(
@@ -439,38 +365,39 @@ fun RegisterScreen(modifier: Modifier = Modifier,
              * save it in the db
              */
             // Creates a coroutine to claim the account and store it in the DB.
-            val coroutineScope = rememberCoroutineScope()
+            val verifyStatus by patientViewModel.verifyStatus.collectAsStateWithLifecycle()
             Button(
-                onClick = {
-                    if (patientDB?.patientPassword.isNullOrEmpty()){
-                    if (phoneNoError && matchPassword && hasName) {
-//                        Log.d("debug", "passes first if with id and phone: " + userId + " & " + userPhone)
-//                        Log.d("debug", "now phone db and phone " + phoneFromDB + " and " + userPhone)
-                        if (patientDB?.patientPhoneNumber == userPhone) {
-                            Log.d("debug", "passes second if")
-                            //Insert pass and name in db
-                            coroutineScope.launch {
-                                try {
-                                    patientViewModel.claimAccount(userId, userName, userPassword)
-                                    Log.d("debug", "Ran through claim acc.")
-                                } catch (e: Exception) {
-                                    Log.d("Error", "Could not claim patient account.")
-                                }
-                            }
-                            Toast.makeText(mContext, "Account Claimed", Toast.LENGTH_LONG).show()
-                        } else {
-                            Toast.makeText(mContext, "Invalid account, please try again.", Toast.LENGTH_LONG).show()
-                        }
-                    } else {
-                        Toast.makeText(mContext, "Please fill in your credentials and matching password.", Toast.LENGTH_LONG).show()
-                    }
-                } else {
-                    Toast.makeText(mContext, "You already have an account, please directly Login.", Toast.LENGTH_LONG).show()
+                onClick = { patientViewModel.verifyRegister(userId, userPhone)
 
-                    }
                 }
             ) {
-                Text("Register")
+                Text("Continue Register")
+            }
+            var showModal by remember { mutableStateOf(false) }
+
+            verifyStatus?.let { _ ->
+                when (verifyStatus) {
+                    is PatientViewModel.VerifyStatus.InvalidID -> Toast.makeText(context, "The ID is invalid.", Toast.LENGTH_SHORT).show()
+                    is PatientViewModel.VerifyStatus.InvalidPhone -> Toast.makeText(context, "Phone number doesn't match the ID.", Toast.LENGTH_SHORT).show()
+                    is PatientViewModel.VerifyStatus.AlreadyRegistered -> Toast.makeText(context, "Account already claimed, please log in.", Toast.LENGTH_SHORT).show()
+                    is PatientViewModel.VerifyStatus.Success -> showModal = true // <- trigger your modal
+                    else -> {
+                        Toast.makeText(context, "Verification failed.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                // Reset result so it doesn't keep firing
+                patientViewModel.verifyStatus.value = null
+            }
+
+            if (showModal) {
+                ClaimAccountDialog(
+                    onDismissRequest = { showModal = false },
+                    onClaimClick = { name, password, confirmPassword ->
+                        patientViewModel.claimRegister(userId, name, password, confirmPassword)
+                        showModal = false
+                    }
+                )
             }
             Spacer(modifier = Modifier.height(5.dp))
 
@@ -482,6 +409,115 @@ fun RegisterScreen(modifier: Modifier = Modifier,
                 onClick = goToLoginScreen)
             {
                 Text("Login")
+            }
+        }
+    }
+}
+
+@Composable
+fun ClaimAccountDialog(
+    onDismissRequest: () -> Unit,
+    onClaimClick: (String, String, String) -> Unit,
+) {
+    var userName by remember { mutableStateOf("") }
+    var userPassword by remember { mutableStateOf("") }
+    var userConfirmPassword by remember { mutableStateOf("") }
+
+    val nameValid = userName.isNotBlank()
+    val passwordMatch = userPassword == userConfirmPassword && userPassword.isNotBlank()
+
+    Dialog(onDismissRequest = onDismissRequest) {
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.surface,
+            tonalElevation = 4.dp,
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(20.dp)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Complete Your Registration",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Name input
+                OutlinedTextField(
+                    value = userName,
+                    onValueChange = { userName = it },
+                    label = { Text("Name") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                if (!nameValid) {
+                    Text(
+                        text = "Please enter your name.",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Password
+                OutlinedTextField(
+                    value = userPassword,
+                    onValueChange = { userPassword = it },
+                    label = { Text("Password") },
+                    visualTransformation = PasswordVisualTransformation(),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Confirm Password
+                OutlinedTextField(
+                    value = userConfirmPassword,
+                    onValueChange = { userConfirmPassword = it },
+                    label = { Text("Confirm Password") },
+                    visualTransformation = PasswordVisualTransformation(),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                if (!passwordMatch) {
+                    Text(
+                        text = "Your password does not match, please try again.",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    TextButton(onClick = onDismissRequest) {
+                        Text("Cancel")
+                    }
+
+                    Button(
+                        onClick = {
+                            onClaimClick(userName, userPassword, userConfirmPassword)
+                        },
+                        // Only allowed to click the button then.
+                        enabled = nameValid && passwordMatch
+                    ) {
+                        Text("Register")
+                    }
+                }
             }
         }
     }

@@ -7,6 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
@@ -44,6 +45,29 @@ class PatientRepository(applicationContext: Context) {
     suspend fun claimAccount(userId: String, name: String, password: String) {
         return patientDao.claimAccount(userId, name, password)
     }
+
+    /**
+     * Function to check from the database if the user and password matches.
+     */
+    suspend fun checkLogin(userId: String, password: String): PatientViewModel.LoginResult {
+        val patient = patientDao.getPatientById(userId).firstOrNull()
+
+        return when {
+            patient == null -> PatientViewModel.LoginResult.AccountNotFound
+            patient.patientPassword.isEmpty() -> PatientViewModel.LoginResult.AccountNotClaimed
+            patient.patientPassword == password -> PatientViewModel.LoginResult.Success(patient)
+            else -> PatientViewModel.LoginResult.IncorrectPassword
+        }
+    }
+
+    /**
+     * Function to verify details to claim register account.
+     */
+    suspend fun verifyRegister(userID: String, userPhone: String): Boolean {
+        val patient = patientDao.getPatientById(userID).firstOrNull()
+        return patient?.patientPhoneNumber == userPhone
+    }
+
 
     /**
      * Checks if the CSV has been loaded or not through checking if it's empty.
