@@ -1,4 +1,4 @@
-package com.fit2081.fit2081_a3_caileen_34375783
+package com.fit2081.fit2081_a3_caileen_34375783.UIScreen.LoginScreen
 
 import android.content.Intent
 import android.os.Bundle
@@ -47,14 +47,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.QuestionnairePage
 import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
-import com.fit2081.fit2081_a3_caileen_34375783.patient.PatientViewModel
 import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
 
 
 class LoginPage : ComponentActivity() {
     // Patient View Model
-    private val patientViewModel: PatientViewModel by viewModels()
+    private val loginViewModel: LoginViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -64,12 +64,12 @@ class LoginPage : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     if (showLoginScreen) {
                       LoginScreen(
-                          patientViewModel,
+                          loginViewModel,
                           goToRegisterScreen = { showLoginScreen = false}
                       )
                     } else {
                         RegisterScreen(
-                            patientViewModel,
+                            loginViewModel,
                             goToLoginScreen = { showLoginScreen = true}
                         )
                     }
@@ -81,7 +81,7 @@ class LoginPage : ComponentActivity() {
 
 @Composable
 fun LoginScreen(
-    patientViewModel: PatientViewModel,
+    loginViewModel: LoginViewModel,
     goToRegisterScreen: () -> Unit
 ) {
     //Variables
@@ -89,7 +89,7 @@ fun LoginScreen(
     var userPassword by remember { mutableStateOf("") }
 
     // Obtaining State values from the viewmodel
-    val idList by patientViewModel.getAllUserIds().collectAsStateWithLifecycle(emptyList())
+    val idList by loginViewModel.getAllUserIds().collectAsStateWithLifecycle(emptyList())
 
     // Validation variables
     var passwordPresent by remember { mutableStateOf(false) }
@@ -189,35 +189,35 @@ fun LoginScreen(
             /**
              * Continue Button to Log in
              */
-            val loginResult by patientViewModel.loginResult.collectAsStateWithLifecycle()
+            val loginResult by loginViewModel.loginResult.collectAsStateWithLifecycle()
 
             loginResult?.let { result ->
                 when (result) {
-                    is PatientViewModel.LoginResult.Success -> {
+                    is LoginViewModel.LoginResult.Success -> {
                         Toast.makeText(context, "Login successful.", Toast.LENGTH_SHORT).show()
                         AuthManager.login(context, result.patient.userID)
                         context.startActivity(Intent(context, QuestionnairePage::class.java))
                     }
-                    PatientViewModel.LoginResult.IncorrectPassword -> {
+                    LoginViewModel.LoginResult.IncorrectPassword -> {
                         Toast.makeText(context, "Incorrect password, please try again.", Toast.LENGTH_SHORT).show()
                     }
-                    PatientViewModel.LoginResult.AccountNotClaimed -> {
+                    LoginViewModel.LoginResult.AccountNotClaimed -> {
                         Toast.makeText(context, "Account not claimed. Please register.", Toast.LENGTH_SHORT).show()
                     }
                     // Assuming they can choose an invalid input (real life).
-                    PatientViewModel.LoginResult.AccountNotFound -> {
+                    LoginViewModel.LoginResult.AccountNotFound -> {
                         Toast.makeText(context, "User ID not found.", Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 // Reset result so it doesn't keep firing
-                patientViewModel.loginResult.value = null
+                loginViewModel.loginResult.value = null
             }
 
             Button(
                 onClick = {
                     if (userId.isNotEmpty() && userPassword.isNotEmpty()) {
-                        patientViewModel.login(userId, userPassword)
+                        loginViewModel.login(userId, userPassword)
                     } else {
                         Toast.makeText(context, "Please fill in your credentials.", Toast.LENGTH_SHORT).show()
                     }
@@ -241,7 +241,7 @@ fun LoginScreen(
 
 @Composable
 fun RegisterScreen(
-    patientViewModel: PatientViewModel,
+    loginViewModel: LoginViewModel,
     goToLoginScreen: () -> Unit
 ) {
     Log.d("debug regis", "initial regis func")
@@ -251,7 +251,7 @@ fun RegisterScreen(
     var userPhone by remember { mutableStateOf("") }
 
     // Obtaining State values from the viewmodel
-    val idList by patientViewModel.getAllUserIds().collectAsStateWithLifecycle(emptyList())
+    val idList by loginViewModel.getAllUserIds().collectAsStateWithLifecycle(emptyList())
 
     // For validation
     var phoneNoError by remember { mutableStateOf(false) }
@@ -365,9 +365,9 @@ fun RegisterScreen(
              * save it in the db
              */
             // Creates a coroutine to claim the account and store it in the DB.
-            val verifyStatus by patientViewModel.verifyStatus.collectAsStateWithLifecycle()
+            val verifyStatus by loginViewModel.verifyStatus.collectAsStateWithLifecycle()
             Button(
-                onClick = { patientViewModel.verifyRegister(userId, userPhone)
+                onClick = { loginViewModel.verifyRegister(userId, userPhone)
 
                 }
             ) {
@@ -377,24 +377,24 @@ fun RegisterScreen(
 
             verifyStatus?.let { _ ->
                 when (verifyStatus) {
-                    is PatientViewModel.VerifyStatus.InvalidID -> Toast.makeText(context, "The ID is invalid.", Toast.LENGTH_SHORT).show()
-                    is PatientViewModel.VerifyStatus.InvalidPhone -> Toast.makeText(context, "Phone number doesn't match the ID.", Toast.LENGTH_SHORT).show()
-                    is PatientViewModel.VerifyStatus.AlreadyRegistered -> Toast.makeText(context, "Account already claimed, please log in.", Toast.LENGTH_SHORT).show()
-                    is PatientViewModel.VerifyStatus.Success -> showModal = true // <- trigger your modal
+                    is LoginViewModel.VerifyStatus.InvalidID -> Toast.makeText(context, "The ID is invalid.", Toast.LENGTH_SHORT).show()
+                    is LoginViewModel.VerifyStatus.InvalidPhone -> Toast.makeText(context, "Phone number doesn't match the ID.", Toast.LENGTH_SHORT).show()
+                    is LoginViewModel.VerifyStatus.AlreadyRegistered -> Toast.makeText(context, "Account already claimed, please log in.", Toast.LENGTH_SHORT).show()
+                    is LoginViewModel.VerifyStatus.Success -> showModal = true // <- trigger your modal
                     else -> {
                         Toast.makeText(context, "Verification failed.", Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 // Reset result so it doesn't keep firing
-                patientViewModel.verifyStatus.value = null
+            // .verifyStatus.value = null
             }
 
             if (showModal) {
                 ClaimAccountDialog(
                     onDismissRequest = { showModal = false },
                     onClaimClick = { name, password, confirmPassword ->
-                        patientViewModel.claimRegister(userId, name, password, confirmPassword)
+                        loginViewModel.claimRegister(userId, name, password, confirmPassword)
                         showModal = false
                     }
                 )
