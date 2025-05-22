@@ -2,6 +2,7 @@ package com.fit2081.fit2081_a3_caileen_34375783.patient
 
 import android.content.Context
 import android.util.Log
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.LoginScreen.LoginViewModel
 import com.fit2081.fit2081_a3_caileen_34375783.data.AppDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -49,14 +50,14 @@ class PatientRepository(applicationContext: Context) {
     /**
      * Function to check from the database if the user and password matches.
      */
-    suspend fun checkLogin(userId: String, password: String): PatientViewModel.LoginResult {
+    suspend fun checkLogin(userId: String, password: String): LoginViewModel.LoginResult {
         val patient = patientDao.getPatientById(userId).firstOrNull()
 
         return when {
-            patient == null -> PatientViewModel.LoginResult.AccountNotFound
-            patient.patientPassword.isEmpty() -> PatientViewModel.LoginResult.AccountNotClaimed
-            patient.patientPassword == password -> PatientViewModel.LoginResult.Success(patient)
-            else -> PatientViewModel.LoginResult.IncorrectPassword
+            patient == null -> LoginViewModel.LoginResult.AccountNotFound
+            patient.patientPassword.isEmpty() -> LoginViewModel.LoginResult.AccountNotClaimed
+            patient.patientPassword == password -> LoginViewModel.LoginResult.Success(patient)
+            else -> LoginViewModel.LoginResult.IncorrectPassword
         }
     }
 

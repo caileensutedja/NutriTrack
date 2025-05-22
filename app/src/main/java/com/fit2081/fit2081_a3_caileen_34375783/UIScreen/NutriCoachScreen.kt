@@ -1,4 +1,4 @@
-package com.fit2081.fit2081_a3_caileen_34375783
+package com.fit2081.fit2081_a3_caileen_34375783.UIScreen
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -52,8 +52,6 @@ import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375
 
 class NutriCoachScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        val patientViewModel: PatientViewModel by viewModels()
-
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
@@ -71,7 +69,7 @@ class NutriCoachScreen : ComponentActivity() {
                             .fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        MyNavHost(navController, patientViewModel)
+                        MyNavHost(navController)
                     }
                 }
             }
@@ -80,8 +78,9 @@ class NutriCoachScreen : ComponentActivity() {
 }
 
 @Composable
-fun NutriCoachPage(navController: NavHostController,
-                   patientViewModel: PatientViewModel) {
+fun NutriCoachPage(navController: NavHostController) {
+    val patientViewModel: PatientViewModel = viewModel()
+
     Column(
         modifier = Modifier.fillMaxHeight().fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,

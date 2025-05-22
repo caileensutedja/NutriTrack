@@ -1,9 +1,7 @@
-package com.fit2081.fit2081_a3_caileen_34375783
+package com.fit2081.fit2081_a3_caileen_34375783.UIScreen
 
 import android.content.Intent
-import android.graphics.drawable.Icon
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -19,9 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -29,31 +25,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.semantics.Role.Companion.Button
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.fit2081.fit2081_a3_caileen_34375783.FoodIntake.FoodIntakeViewModel
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.LoginScreen.LoginPage
 import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
 import com.fit2081.fit2081_a3_caileen_34375783.patient.PatientViewModel
 import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
 
 class SettingsScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        val patientViewModel: PatientViewModel by viewModels()
-
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
@@ -71,7 +62,7 @@ class SettingsScreen : ComponentActivity() {
                             .fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        MyNavHost(navController, patientViewModel)
+                        MyNavHost(navController)
                     }
                 }
             }
@@ -81,22 +72,13 @@ class SettingsScreen : ComponentActivity() {
 
 //@Preview(showBackground = true)
 @Composable
-fun SettingsPage(navHostController: NavHostController, patientViewModel: PatientViewModel){
-//fun SettingsPage(){
+fun SettingsPage(navHostController: NavHostController){
+    val patientViewModel: PatientViewModel = viewModel()
+
     var context = LocalContext.current
 
     val mID = AuthManager.getPatientId().toString()
-//    if (mID is String) {
-//        patientViewModel.getNameById(mID)
-//        patientViewModel.getPhoneById(mID)
-//        patientViewModel.getPatientById(mID)
-//    }
-
     val patientDB by patientViewModel.getPatientById(mID).collectAsStateWithLifecycle(null)
-//    var patientName by patientViewModel.name
-//    var patientPhone by patientViewModel.phoneNumber
-//    var patientInfo by patientViewModel.patient
-//    Log.d("debug ", "patient info is: " + patientDB?.userID)
 
     Column(
         modifier = Modifier
@@ -191,6 +173,7 @@ fun SettingsPage(navHostController: NavHostController, patientViewModel: Patient
         Row (modifier = Modifier.fillMaxWidth()){
             Button(
                 onClick = {
+//                    context.startActivity(Intent(context, Clini::class.java))
                 }
             ){
                 Text("Clinician Login")

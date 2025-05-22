@@ -19,15 +19,15 @@ class PatientViewModel (application: Application): AndroidViewModel(application)
 
     var patient = mutableStateOf<Patient?>(null)
 
-
-    /**
-     * Check the initial database, if empty, call the repo.
-     */
-    fun initialDB(context: Context){
-        viewModelScope.launch {
-            repository.loadDB(context = context, "data.csv")
-        }
-    }
+//
+//    /**
+//     * Check the initial database, if empty, call the repo.
+//     */
+//    fun initialDB(context: Context){
+//        viewModelScope.launch {
+//            repository.loadDB(context = context, "data.csv")
+//        }
+//    }
 
     /**
      * Get the patient by ID from the database
@@ -41,76 +41,76 @@ class PatientViewModel (application: Application): AndroidViewModel(application)
     fun getAllUserIds():
         Flow<List<String>> = repository.getAllUserIds()
 
-    /**
-     * To attempt and login.
-     */
-    var loginResult = MutableStateFlow<LoginResult?>(null)
+//    /**
+//     * To attempt and login.
+//     */
+//    var loginResult = MutableStateFlow<LoginResult>(null)
+//
+//    fun login(userId: String, password: String) {
+//        viewModelScope.launch {
+//            val result = repository.checkLogin(userId, password)
+//            loginResult.value = result
+//        }
+//    }
+//
+//    sealed class LoginResult {
+//        data class Success(val patient: Patient): LoginResult()
+//        object IncorrectPassword: LoginResult()
+//        object AccountNotClaimed: LoginResult()
+//        object AccountNotFound: LoginResult()
+//    }
 
-    fun login(userId: String, password: String) {
-        viewModelScope.launch {
-            val result = repository.checkLogin(userId, password)
-            loginResult.value = result
-        }
-    }
-
-    sealed class LoginResult {
-        data class Success(val patient: Patient): LoginResult()
-        object IncorrectPassword: LoginResult()
-        object AccountNotClaimed: LoginResult()
-        object AccountNotFound: LoginResult()
-    }
-
-    /**
-     * To verify details for account registration.
-     */
-    val verifyStatus = MutableStateFlow<VerifyStatus?>(null)
-
-    fun verifyRegister(userID: String, userPhone: String) {
-        viewModelScope.launch {
-            val patient = repository.getPatientById(userID).firstOrNull()
-            when {
-                patient == null -> verifyStatus.value = VerifyStatus.InvalidID
-                patient.patientPhoneNumber != userPhone -> verifyStatus.value = VerifyStatus.InvalidPhone
-                patient.patientPassword.isNotEmpty() -> verifyStatus.value = VerifyStatus.AlreadyRegistered
-                else -> verifyStatus.value = VerifyStatus.Success
-            }
-        }
-    }
-
-    sealed class VerifyStatus {
-        object Success : VerifyStatus()
-        object InvalidID : VerifyStatus()
-        object InvalidPhone : VerifyStatus()
-        object AlreadyRegistered : VerifyStatus()
-    }
-
-
-    /**
-     * Sets name and phone number for a userID.
-     */
-    val claimStatus = MutableStateFlow<ClaimStatus?>(null)
-
-    fun claimRegister(userID: String, name: String, password: String, confirmPassword: String) {
-        viewModelScope.launch {
-            if (name.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
-                claimStatus.value = ClaimStatus.MissingFields
-                return@launch
-            }
-            if (password != confirmPassword) {
-                claimStatus.value = ClaimStatus.PasswordMismatch
-                return@launch
-            }
-
-            repository.claimAccount(userID, name, password)
-            claimStatus.value = ClaimStatus.Success
-        }
-    }
-
-    sealed class ClaimStatus {
-        object Success : ClaimStatus()
-        object MissingFields : ClaimStatus()
-        object PasswordMismatch : ClaimStatus()
-    }
+//    /**
+//     * To verify details for account registration.
+//     */
+//    val verifyStatus = MutableStateFlow<VerifyStatus?>(null)
+//
+//    fun verifyRegister(userID: String, userPhone: String) {
+//        viewModelScope.launch {
+//            val patient = repository.getPatientById(userID).firstOrNull()
+//            when {
+//                patient == null -> verifyStatus.value = VerifyStatus.InvalidID
+//                patient.patientPhoneNumber != userPhone -> verifyStatus.value = VerifyStatus.InvalidPhone
+//                patient.patientPassword.isNotEmpty() -> verifyStatus.value = VerifyStatus.AlreadyRegistered
+//                else -> verifyStatus.value = VerifyStatus.Success
+//            }
+//        }
+//    }
+//
+//    sealed class VerifyStatus {
+//        object Success : VerifyStatus()
+//        object InvalidID : VerifyStatus()
+//        object InvalidPhone : VerifyStatus()
+//        object AlreadyRegistered : VerifyStatus()
+//    }
+//
+//
+//    /**
+//     * Sets name and phone number for a userID.
+//     */
+//    val claimStatus = MutableStateFlow<ClaimStatus?>(null)
+//
+//    fun claimRegister(userID: String, name: String, password: String, confirmPassword: String) {
+//        viewModelScope.launch {
+//            if (name.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
+//                claimStatus.value = ClaimStatus.MissingFields
+//                return@launch
+//            }
+//            if (password != confirmPassword) {
+//                claimStatus.value = ClaimStatus.PasswordMismatch
+//                return@launch
+//            }
+//
+//            repository.claimAccount(userID, name, password)
+//            claimStatus.value = ClaimStatus.Success
+//        }
+//    }
+//
+//    sealed class ClaimStatus {
+//        object Success : ClaimStatus()
+//        object MissingFields : ClaimStatus()
+//        object PasswordMismatch : ClaimStatus()
+//    }
 
 
 

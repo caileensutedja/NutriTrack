@@ -1,4 +1,4 @@
-package com.fit2081.fit2081_a3_caileen_34375783
+package com.fit2081.fit2081_a3_caileen_34375783.UIScreen
 
 import android.content.Intent
 import android.os.Bundle
@@ -55,12 +55,15 @@ import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.fit2081.fit2081_a3_caileen_34375783.R
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.InsightScreen.InsightViewModel
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.InsightScreen.InsightsScreen
 import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
 import com.fit2081.fit2081_a3_caileen_34375783.patient.PatientViewModel
 
 class HomeScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        val patientViewModel: PatientViewModel by viewModels()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
@@ -77,7 +80,7 @@ class HomeScreen : ComponentActivity() {
                             .fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        MyNavHost(navController, patientViewModel)
+                        MyNavHost(navController)
                     }
                 }
             }
@@ -87,9 +90,10 @@ class HomeScreen : ComponentActivity() {
 
 
 @Composable
-fun HomePage(navController: NavHostController, patientViewModel: PatientViewModel) {
+fun HomePage(navController: NavHostController) {
     val mContext = LocalContext.current
     val mID = AuthManager.getPatientId().toString()
+    val patientViewModel: PatientViewModel = viewModel()
     val patientDB by patientViewModel.getPatientById(mID).collectAsStateWithLifecycle(null)
 
     Column(
@@ -214,8 +218,9 @@ fun HomePage(navController: NavHostController, patientViewModel: PatientViewMode
 
 @Composable
 fun MyNavHost(
-    navController: NavHostController,
-    patientViewModel: PatientViewModel) {
+    navController: NavHostController
+//    patientViewModel: PatientViewModel
+) {
     Log.d("debug navhost homescreen", "run through navhost")
     NavHost(
         navController = navController,
@@ -223,20 +228,20 @@ fun MyNavHost(
     ) {
         composable("Home") {
             Log.d("debug navhost homescreen", "in home comp")
-            HomePage(navController, patientViewModel)
+            HomePage(navController)
         }
         composable("Insights") {
             Log.d("debug navhost homescreen", "in insights comp")
-            InsightsScreen(navController, patientViewModel)
+            InsightsScreen(navController)
         }
         composable("NutriCoach") {
 //            Log.d("debug navhost homescreen", "in nutri comp")
-            NutriCoachPage(navController, patientViewModel)
+            NutriCoachPage(navController)
             // To be implemented next assignment: NutriCoach Screen
         }
         composable("Settings") {
             Log.d("debug navhost homescreen", "in settings comp")
-            SettingsPage(navController, patientViewModel)
+            SettingsPage(navController)
             // To be implemented next assignment: Settings Screen
         }
 

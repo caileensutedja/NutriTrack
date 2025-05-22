@@ -25,9 +25,6 @@ class FruityAIViewModel : ViewModel() {
             try {
                 val apiService = FruitAPIService.create()
                 val response = apiService.getFruitInfo(fruitName)
-                Log.d("DEBUG FRUITY", "response is: " + response.body())
-//                val response2 = apiService.getFruitInfo("banana")
-//                Log.d("TAG", "Body: ${response.body()}")
                 if (response.isSuccessful) {
                     response.body()?.let { fruit ->
                         val info = fruit.nutritions
@@ -53,27 +50,3 @@ class FruityAIViewModel : ViewModel() {
         }
     }
 }
-
-//    fun sendPrompt(
-//        prompt: String
-//    ) {
-//        _uiState.value = UiState.Loading
-//
-//        viewModelScope.launch(Dispatchers.IO) {
-//            try {
-//                // THIS SHOULD GET THE RESPONSE IN THE FORM OF STRING ALR
-//                val response = FruitAPIService.getFruitInfo(
-//                    content {
-//                        text(prompt)
-//                    }
-//                )
-//                response.text?.let { outputContent ->
-//                    _uiState.value = UiState.Success(outputContent)
-//                }
-//            } catch (e: Exception) {
-//                _uiState.value = UiState.Error(e.localizedMessage ?: "")
-//            }
-//        }
-//    }
-//}
-

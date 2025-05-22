@@ -1,4 +1,4 @@
-package com.fit2081.fit2081_a3_caileen_34375783
+package com.fit2081.fit2081_a3_caileen_34375783.UIScreen
 
 import android.app.TimePickerDialog
 import android.content.Intent
@@ -58,6 +58,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fit2081.fit2081_a3_caileen_34375783.FoodIntake.FoodIntake
 import com.fit2081.fit2081_a3_caileen_34375783.FoodIntake.FoodIntakeViewModel
+import com.fit2081.fit2081_a3_caileen_34375783.R
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.InsightScreen.InsightsPage
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.LoginScreen.LoginPage
 import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
 import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
 import java.time.LocalTime

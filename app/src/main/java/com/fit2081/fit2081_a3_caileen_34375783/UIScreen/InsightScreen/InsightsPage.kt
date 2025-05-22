@@ -1,14 +1,11 @@
-package com.fit2081.fit2081_a3_caileen_34375783
+package com.fit2081.fit2081_a3_caileen_34375783.UIScreen.InsightScreen
 
-import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_SEND
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,7 +25,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,17 +33,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.BottomBar
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.MyNavHost
 import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
-import com.fit2081.fit2081_a3_caileen_34375783.patient.PatientViewModel
 import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
 
 class InsightsPage : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        val patientViewModel: PatientViewModel by viewModels()
-
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
@@ -64,7 +59,7 @@ class InsightsPage : ComponentActivity() {
                             .fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        MyNavHost(navController, patientViewModel)
+                        MyNavHost(navController)
                     }
                 }
             }
@@ -74,30 +69,31 @@ class InsightsPage : ComponentActivity() {
 
 @Composable
 fun InsightsScreen(
-    navController: NavHostController,
-    patientViewModel: PatientViewModel) {
+    navController: NavHostController) {
+    val insightViewModel: InsightViewModel = viewModel()
     // Variables
     val mContext = LocalContext.current
     val mID = AuthManager.getPatientId().toString()
-    val patientDB by patientViewModel.getPatientById(mID).collectAsStateWithLifecycle(null)
-    val insightsData = listOf(
-        listOf("Vegetables",patientDB?.vegetableScore.toString(), "10" ),
-        listOf("Fruits",patientDB?.fruitScore.toString(), "10" ),
-        listOf("Grains and Cereals", patientDB?.grainsAndCerealScore.toString(), "5"),
-        listOf("Whole Grains", patientDB?.wholeGrainsScore.toString(), "5"),
-        listOf("Meat and Alternatives", patientDB?.meatAndAltScore.toString(), "10"),
-        listOf("Dairy", patientDB?.dairyAndALtScore.toString(), "10"),
-        listOf("Water", patientDB?.waterScore.toString(), "5"),
-        listOf("Saturated Fats", patientDB?.saturatedFatScore.toString(), "5"),
-        listOf("Unsaturated Fats", patientDB?.unsaturatedFatScore.toString(), "5"),
-        listOf("Sodium", patientDB?.sodiumScore.toString(), "10"),
-        listOf("Sugar", patientDB?.sugarScore.toString(), "10"),
-        listOf("Alcohol", patientDB?.alcoholScore.toString(), "5"),
-        listOf("Discretionary Foods", patientDB?.discretionaryScore.toString(), "10")
-
-    )
-    val totalScore = patientDB?.totalScore.toString()
-    val totalScoreMessage: String = "My total score is " + totalScore + "/100."
+//    val patientDB by insightViewModel.getPatientById(mID).collectAsStateWithLifecycle(null)
+    val insightsData = insightViewModel.getInsightsById(mID)
+//        listOf(
+//        listOf("Vegetables",patientDB?.vegetableScore.toString(), "10" ),
+//        listOf("Fruits",patientDB?.fruitScore.toString(), "10" ),
+//        listOf("Grains and Cereals", patientDB?.grainsAndCerealScore.toString(), "5"),
+//        listOf("Whole Grains", patientDB?.wholeGrainsScore.toString(), "5"),
+//        listOf("Meat and Alternatives", patientDB?.meatAndAltScore.toString(), "10"),
+//        listOf("Dairy", patientDB?.dairyAndALtScore.toString(), "10"),
+//        listOf("Water", patientDB?.waterScore.toString(), "5"),
+//        listOf("Saturated Fats", patientDB?.saturatedFatScore.toString(), "5"),
+//        listOf("Unsaturated Fats", patientDB?.unsaturatedFatScore.toString(), "5"),
+//        listOf("Sodium", patientDB?.sodiumScore.toString(), "10"),
+//        listOf("Sugar", patientDB?.sugarScore.toString(), "10"),
+//        listOf("Alcohol", patientDB?.alcoholScore.toString(), "5"),
+//        listOf("Discretionary Foods", patientDB?.discretionaryScore.toString(), "10")
+//
+//    )
+    val totalScore = insightViewModel.getTotalScore(mID)
+    val totalScoreMessage = insightViewModel.getTotalScoreMessage(mID)
 
     Column (
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
