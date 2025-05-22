@@ -1,4 +1,4 @@
-package com.fit2081.fit2081_a3_caileen_34375783
+package com.fit2081.fit2081_a3_caileen_34375783.UIScreen.WelcomeScreen
 
 import android.content.Intent
 import android.os.Bundle
@@ -30,16 +30,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.fit2081.fit2081_a3_caileen_34375783.R
 import com.fit2081.fit2081_a3_caileen_34375783.patient.PatientViewModel
 import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
 
 import android.util.Log;
 import androidx.compose.runtime.LaunchedEffect
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.LoginScreen.LoginPage
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.QuestionnairePage
+import com.fit2081.fit2081_a3_caileen_34375783.R
 import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
 
 class MainActivity : ComponentActivity() {
-    private val patientViewModel: PatientViewModel by viewModels()
+    private val welcomeViewModel: WelcomeViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AuthManager.init(applicationContext)
@@ -47,7 +49,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             FIT2081_A3_Caileen_34375783Theme {
                 // Checks if the csv data is loaded
-                patientViewModel.initialDB(applicationContext)
+                welcomeViewModel.initialDB(applicationContext)
                 Log.d("debug main act if restart", "auth manager start: "+ AuthManager.getPatientId())
                 // Variables
                 val context = LocalContext.current
