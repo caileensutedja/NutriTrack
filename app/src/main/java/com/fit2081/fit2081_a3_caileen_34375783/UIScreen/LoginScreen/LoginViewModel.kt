@@ -7,7 +7,6 @@ import com.fit2081.fit2081_a3_caileen_34375783.patient.Patient
 import com.fit2081.fit2081_a3_caileen_34375783.patient.PatientRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 
@@ -41,59 +40,30 @@ class LoginViewModel (application: Application): AndroidViewModel(application){
     }
 
     /**
-     * To verify details for account registration.
+     * To attempt register.
      */
-    val verifyStatus = MutableStateFlow<VerifyStatus?>(null)
+    var registerUserDataResult = MutableStateFlow<RegisterResult?>(null)
 
-    fun verifyRegister(userID: String, userPhone: String) {
+    fun registerUserDataValidation(userId: String, password: String) {
         viewModelScope.launch {
-            val patient = repository.getPatientById(userID).firstOrNull()
-            when {
-                patient == null -> verifyStatus.value = VerifyStatus.InvalidID
-                patient.patientPhoneNumber != userPhone -> verifyStatus.value =
-                    VerifyStatus.InvalidPhone
-                patient.patientPassword.isNotEmpty() -> verifyStatus.value =
-                    VerifyStatus.AlreadyRegistered
-                else -> verifyStatus.value = VerifyStatus.Success
-            }
+            val result = repository.verifyRegister(userId, password)
+            registerUserDataResult.value = result
         }
     }
-
-    sealed class VerifyStatus {
-        object Success : VerifyStatus()
-        object InvalidID : VerifyStatus()
-        object InvalidPhone : VerifyStatus()
-        object AlreadyRegistered : VerifyStatus()
+    sealed class RegisterResult {
+        object Success : RegisterResult()
+        object InvalidPhone : RegisterResult()
+        object AlreadyRegistered : RegisterResult()
+        object AccountNotFound: RegisterResult()
     }
-
 
     /**
      * Sets name and phone number for a userID.
      */
-    val claimStatus = MutableStateFlow<ClaimStatus?>(null)
-
-    fun claimRegister(userID: String, name: String, password: String, confirmPassword: String) {
+    val claimAccount = true // For the UI logic.
+    fun claimRegister(userID: String, name: String, password: String) {
         viewModelScope.launch {
-            if (name.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
-                claimStatus.value = ClaimStatus.MissingFields
-                return@launch
-            }
-            if (password != confirmPassword) {
-                claimStatus.value = ClaimStatus.PasswordMismatch
-                return@launch
-            }
-
             repository.claimAccount(userID, name, password)
-            claimStatus.value = ClaimStatus.Success
         }
     }
-
-    sealed class ClaimStatus {
-        object Success : ClaimStatus()
-        object MissingFields : ClaimStatus()
-        object PasswordMismatch : ClaimStatus()
-    }
-
-
-
 }

@@ -47,6 +47,7 @@ class PatientRepository(applicationContext: Context) {
         return patientDao.claimAccount(userId, name, password)
     }
 
+
     /**
      * Function to check from the database if the user and password matches.
      */
@@ -64,9 +65,14 @@ class PatientRepository(applicationContext: Context) {
     /**
      * Function to verify details to claim register account.
      */
-    suspend fun verifyRegister(userID: String, userPhone: String): Boolean {
+    suspend fun verifyRegister(userID: String, userPhone: String) : LoginViewModel.RegisterResult {
         val patient = patientDao.getPatientById(userID).firstOrNull()
-        return patient?.patientPhoneNumber == userPhone
+        return when {
+            patient == null -> LoginViewModel.RegisterResult.AccountNotFound
+            patient.patientPassword != "" -> LoginViewModel.RegisterResult.AlreadyRegistered
+            patient.patientPhoneNumber == userPhone -> LoginViewModel.RegisterResult.Success
+            else -> LoginViewModel.RegisterResult.InvalidPhone
+        }
     }
 
 
@@ -88,7 +94,7 @@ class PatientRepository(applicationContext: Context) {
     /**
      * Reads the CSV
      */
-    private fun readCSVInsert(context: Context, fileName: String) {
+     private fun readCSVInsert(context: Context, fileName: String) {
         try {
             val inputStream = context.assets.open(fileName)
             val reader = BufferedReader(InputStreamReader(inputStream))
@@ -122,6 +128,8 @@ class PatientRepository(applicationContext: Context) {
                     sugarScore = columns[header.indexOf("SugarHEIFAscore$sex")],
                     saturatedFatScore = columns[header.indexOf("SaturatedFatHEIFAscore$sex")],
                     unsaturatedFatScore = columns[header.indexOf("UnsaturatedFatHEIFAscore$sex")],
+                    fruitServeSize = columns[header.indexOf("Fruitservesize")],
+                    fruitVariety = columns[header.indexOf("Fruitvariationsscore")]
                 )
                 Log.d("DEBUG", "patients is: " + patient)
 

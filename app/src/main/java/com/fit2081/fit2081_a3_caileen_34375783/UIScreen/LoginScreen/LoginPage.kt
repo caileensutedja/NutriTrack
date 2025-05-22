@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -270,7 +271,6 @@ fun RegisterScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Log.d("debug regis", "initial regis 1")
 
             Text(
                 text = "Register",
@@ -278,7 +278,6 @@ fun RegisterScreen(
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(20.dp))
-            Log.d("debug regis", "initial regis 2")
 
             /**
              * ID Section
@@ -364,39 +363,44 @@ fun RegisterScreen(
              * Register Button
              * save it in the db
              */
-            // Creates a coroutine to claim the account and store it in the DB.
-            val verifyStatus by loginViewModel.verifyStatus.collectAsStateWithLifecycle()
-            Button(
-                onClick = { loginViewModel.verifyRegister(userId, userPhone)
+            var showModal by remember { mutableStateOf(false) }
+            val regisUserDataValidation by loginViewModel.registerUserDataResult.collectAsStateWithLifecycle()
 
+            regisUserDataValidation?.let { result ->
+                when (result) {
+                    is LoginViewModel.RegisterResult.Success -> {
+                        Toast.makeText(context, "Correct credentials.", Toast.LENGTH_SHORT).show()
+                        showModal = true
+                    }
+                    LoginViewModel.RegisterResult.InvalidPhone -> {
+                        Toast.makeText(context, "Incorrect phone number, please try again.", Toast.LENGTH_SHORT).show()
+                    }
+                    LoginViewModel.RegisterResult.AlreadyRegistered -> {
+                        Toast.makeText(context, "Account has been claimed, please log in.", Toast.LENGTH_SHORT).show()
+                    }
+                    // Assuming they can choose an invalid input (real life).
+                    LoginViewModel.RegisterResult.AccountNotFound -> {
+                        Toast.makeText(context, "User ID not found.", Toast.LENGTH_SHORT).show()
+                    }
                 }
+                // Reset result so it doesn't keep firing
+                loginViewModel.registerUserDataResult.value = null
+            }
+            Button(
+                onClick = {
+                    loginViewModel.registerUserDataValidation(userId, userPhone)
+                },
+                enabled = userId.isNotEmpty() && userPhone.length == 11
             ) {
                 Text("Continue Register")
             }
-            var showModal by remember { mutableStateOf(false) }
-
-            verifyStatus?.let { _ ->
-                when (verifyStatus) {
-                    is LoginViewModel.VerifyStatus.InvalidID -> Toast.makeText(context, "The ID is invalid.", Toast.LENGTH_SHORT).show()
-                    is LoginViewModel.VerifyStatus.InvalidPhone -> Toast.makeText(context, "Phone number doesn't match the ID.", Toast.LENGTH_SHORT).show()
-                    is LoginViewModel.VerifyStatus.AlreadyRegistered -> Toast.makeText(context, "Account already claimed, please log in.", Toast.LENGTH_SHORT).show()
-                    is LoginViewModel.VerifyStatus.Success -> showModal = true // <- trigger your modal
-                    else -> {
-                        Toast.makeText(context, "Verification failed.", Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                // Reset result so it doesn't keep firing
-            // .verifyStatus.value = null
-            }
-
             if (showModal) {
-                ClaimAccountDialog(
-                    onDismissRequest = { showModal = false },
-                    onClaimClick = { name, password, confirmPassword ->
-                        loginViewModel.claimRegister(userId, name, password, confirmPassword)
+                ClaimAccountAlertDialog(
+                    userID = userId,
+                    loginViewModel = loginViewModel,
+                    onDismissRequest = {
                         showModal = false
-                    }
+                        goToLoginScreen() } // Handle dismissal
                 )
             }
             Spacer(modifier = Modifier.height(5.dp))
@@ -413,12 +417,13 @@ fun RegisterScreen(
         }
     }
 }
-
 @Composable
-fun ClaimAccountDialog(
-    onDismissRequest: () -> Unit,
-    onClaimClick: (String, String, String) -> Unit,
+fun ClaimAccountAlertDialog(
+    userID: String,
+    loginViewModel: LoginViewModel,
+    onDismissRequest: () -> Unit // This will handle dismissal
 ) {
+    var context = LocalContext.current
     var userName by remember { mutableStateOf("") }
     var userPassword by remember { mutableStateOf("") }
     var userConfirmPassword by remember { mutableStateOf("") }
@@ -426,28 +431,22 @@ fun ClaimAccountDialog(
     val nameValid = userName.isNotBlank()
     val passwordMatch = userPassword == userConfirmPassword && userPassword.isNotBlank()
 
-    Dialog(onDismissRequest = onDismissRequest) {
-        Surface(
-            shape = RoundedCornerShape(16.dp),
-            color = MaterialTheme.colorScheme.surface,
-            tonalElevation = 4.dp,
-            modifier = Modifier.padding(16.dp)
-        ) {
+    AlertDialog(
+        onDismissRequest = onDismissRequest, // Dismiss when clicked outside or on the back button
+        confirmButton = {},
+        title = {
+            Text(
+                text = "Complete Your Registration",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+        },
+        text = {
             Column(
-                modifier = Modifier
-                    .padding(20.dp)
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "Complete Your Registration",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
                 // Name input
                 OutlinedTextField(
                     value = userName,
@@ -467,7 +466,7 @@ fun ClaimAccountDialog(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Password
+                // Password input
                 OutlinedTextField(
                     value = userPassword,
                     onValueChange = { userPassword = it },
@@ -479,7 +478,7 @@ fun ClaimAccountDialog(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Confirm Password
+                // Confirm Password input
                 OutlinedTextField(
                     value = userConfirmPassword,
                     onValueChange = { userConfirmPassword = it },
@@ -497,28 +496,29 @@ fun ClaimAccountDialog(
                         modifier = Modifier.padding(start = 8.dp, top = 4.dp)
                     )
                 }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    TextButton(onClick = onDismissRequest) {
-                        Text("Cancel")
-                    }
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                TextButton(onClick = onDismissRequest) { // Dismiss action
+                    Text("Cancel")
+                }
 
-                    Button(
-                        onClick = {
-                            onClaimClick(userName, userPassword, userConfirmPassword)
-                        },
-                        // Only allowed to click the button then.
-                        enabled = nameValid && passwordMatch
-                    ) {
-                        Text("Register")
-                    }
+                Button(
+                    onClick = {
+                        loginViewModel.claimRegister(userID, userName, userPassword)
+                        if (loginViewModel.claimAccount) {
+                            Toast.makeText(context, "Account registered! Please log in.", Toast.LENGTH_SHORT).show()
+                            AuthManager.login(context, userID)
+                            context.startActivity(Intent(context, QuestionnairePage::class.java))
+                        }
+                    },
+                    enabled = nameValid && passwordMatch
+                ) {
+                    Text("Register")
                 }
             }
+            }
         }
-    }
+    )
 }
