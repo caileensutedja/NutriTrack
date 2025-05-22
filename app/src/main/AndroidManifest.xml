@@ -20,7 +20,7 @@
             android:label="@string/title_activity_test"
             android:theme="@style/Theme.FIT2081_A1_Caileen_34375783" />
         <activity
-            android:name=".UIScreen.NutriCoachScreen"
+            android:name=".UIScreen.NutriCoachViewModel.NutriCoachScreen"
             android:exported="false"
             android:label="@string/title_activity_nutri_coach_screen"
             android:theme="@style/Theme.FIT2081_A1_Caileen_34375783" />
@@ -30,7 +30,7 @@
             android:label="@string/title_activity_insights_page"
             android:theme="@style/Theme.FIT2081_A1_Caileen_34375783" />
         <activity
-            android:name=".UIScreen.HomeScreen"
+            android:name=".UIScreen.HomeScreen.HomeScreen"
             android:exported="false"
             android:label="@string/title_activity_home_screen"
             android:theme="@style/Theme.FIT2081_A1_Caileen_34375783" />

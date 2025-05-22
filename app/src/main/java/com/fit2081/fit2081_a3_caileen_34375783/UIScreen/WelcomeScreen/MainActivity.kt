@@ -48,6 +48,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FIT2081_A3_Caileen_34375783Theme {
+//                AuthManager.logout(applicationContext)
+//                welcomeViewModel.deleteDB(applicationContext)
+
                 // Checks if the csv data is loaded
                 welcomeViewModel.initialDB(applicationContext)
                 Log.d("debug main act if restart", "auth manager start: "+ AuthManager.getPatientId())

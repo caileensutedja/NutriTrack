@@ -18,4 +18,5 @@ class WelcomeViewModel (application: Application): AndroidViewModel(application)
             repository.loadDB(context = context, "data.csv")
         }
     }
+
 }

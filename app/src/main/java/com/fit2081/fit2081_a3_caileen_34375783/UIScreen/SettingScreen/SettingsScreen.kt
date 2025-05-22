@@ -1,11 +1,10 @@
-package com.fit2081.fit2081_a3_caileen_34375783.UIScreen
+package com.fit2081.fit2081_a3_caileen_34375783.UIScreen.SettingScreen
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,7 +36,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.fit2081.fit2081_a3_caileen_34375783.FoodIntake.FoodIntakeViewModel
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.HomeScreen.BottomBar
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.HomeScreen.MyNavHost
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.LoginScreen.LoginPage
 import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
 import com.fit2081.fit2081_a3_caileen_34375783.patient.PatientViewModel
@@ -48,7 +48,6 @@ class SettingsScreen : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-
             FIT2081_A3_Caileen_34375783Theme {
                 val navController: NavHostController = rememberNavController()
                 Scaffold(
@@ -70,15 +69,14 @@ class SettingsScreen : ComponentActivity() {
     }
 }
 
-//@Preview(showBackground = true)
 @Composable
 fun SettingsPage(navHostController: NavHostController){
-    val patientViewModel: PatientViewModel = viewModel()
+    val settingViewModel: SettingViewModel = viewModel()
 
     var context = LocalContext.current
-
     val mID = AuthManager.getPatientId().toString()
-    val patientDB by patientViewModel.getPatientById(mID).collectAsStateWithLifecycle(null)
+    val name = settingViewModel.getName(mID)
+    val phoneNumber = settingViewModel.getPhoneNumber(mID)
 
     Column(
         modifier = Modifier
@@ -128,23 +126,21 @@ fun SettingsPage(navHostController: NavHostController){
 //                horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(0.dp)){
                 Text(
-                    text = "${patientDB?.patientName}",
+                    text = name,
                     fontSize = 15.sp,
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
-                    text = "${patientDB?.patientPhoneNumber}",
+                    text = phoneNumber,
                     fontSize = 15.sp,
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
-                    text = "$mID",
+                    text = mID,
                     fontSize = 15.sp,
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-
             }
-
         }
         Spacer(modifier = Modifier.height(30.dp))
         HorizontalDivider()
@@ -164,7 +160,6 @@ fun SettingsPage(navHostController: NavHostController){
                 onClick = {
                     AuthManager.logout(context)
                     context.startActivity(Intent(context, LoginPage::class.java))
-
                 }
             ){
                 Text("Log Out")

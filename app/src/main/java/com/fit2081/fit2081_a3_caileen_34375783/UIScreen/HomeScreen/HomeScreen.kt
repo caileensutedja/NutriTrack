@@ -1,4 +1,4 @@
-package com.fit2081.fit2081_a3_caileen_34375783.UIScreen
+package com.fit2081.fit2081_a3_caileen_34375783.UIScreen.HomeScreen
 
 import android.content.Intent
 import android.os.Bundle
@@ -53,14 +53,13 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
 import android.util.Log
-import androidx.activity.viewModels
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.fit2081.fit2081_a3_caileen_34375783.R
-import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.InsightScreen.InsightViewModel
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.InsightScreen.InsightsScreen
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewModel.NutriCoachPage
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.QuestionnairePage
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.SettingScreen.SettingsPage
 import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
-import com.fit2081.fit2081_a3_caileen_34375783.patient.PatientViewModel
 
 class HomeScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,8 +92,10 @@ class HomeScreen : ComponentActivity() {
 fun HomePage(navController: NavHostController) {
     val mContext = LocalContext.current
     val mID = AuthManager.getPatientId().toString()
-    val patientViewModel: PatientViewModel = viewModel()
-    val patientDB by patientViewModel.getPatientById(mID).collectAsStateWithLifecycle(null)
+    val homeViewModel: HomeViewModel = viewModel()
+    val totalScore = homeViewModel.getTotalScore(mID)
+    val name = homeViewModel.getName(mID)
+//    val patientDB by patientViewModel.getPatientById(mID).collectAsStateWithLifecycle(null)
 
     Column(
         modifier = Modifier
@@ -107,7 +108,7 @@ fun HomePage(navController: NavHostController) {
             fontSize = 17.sp,
             textAlign = TextAlign.Start)
         Text(
-            text = "${patientDB?.patientName}", // Prints the ID stored in AuthManager
+            text = name, // Prints the ID stored in AuthManager
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Start
@@ -190,7 +191,7 @@ fun HomePage(navController: NavHostController) {
                 modifier = Modifier.fillMaxWidth(0.7f)
             )
 
-            Text(text = patientDB?.totalScore + "/100",
+            Text(text = "$totalScore/100",
             color = Color.Green,
             fontWeight = FontWeight.Bold
         )
@@ -219,7 +220,6 @@ fun HomePage(navController: NavHostController) {
 @Composable
 fun MyNavHost(
     navController: NavHostController
-//    patientViewModel: PatientViewModel
 ) {
     Log.d("debug navhost homescreen", "run through navhost")
     NavHost(
@@ -227,24 +227,21 @@ fun MyNavHost(
         startDestination = "Home"
     ) {
         composable("Home") {
-            Log.d("debug navhost homescreen", "in home comp")
+//            Log.d("debug navhost homescreen", "in home comp")
             HomePage(navController)
         }
         composable("Insights") {
-            Log.d("debug navhost homescreen", "in insights comp")
+//            Log.d("debug navhost homescreen", "in insights comp")
             InsightsScreen(navController)
         }
         composable("NutriCoach") {
 //            Log.d("debug navhost homescreen", "in nutri comp")
             NutriCoachPage(navController)
-            // To be implemented next assignment: NutriCoach Screen
         }
         composable("Settings") {
-            Log.d("debug navhost homescreen", "in settings comp")
+//            Log.d("debug navhost homescreen", "in settings comp")
             SettingsPage(navController)
-            // To be implemented next assignment: Settings Screen
         }
-
     }
 }
 

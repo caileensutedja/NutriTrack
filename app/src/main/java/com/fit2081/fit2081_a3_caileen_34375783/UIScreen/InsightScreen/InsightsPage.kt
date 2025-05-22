@@ -36,8 +36,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.BottomBar
-import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.MyNavHost
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.HomeScreen.BottomBar
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.HomeScreen.MyNavHost
 import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
 import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
 
@@ -74,24 +74,7 @@ fun InsightsScreen(
     // Variables
     val mContext = LocalContext.current
     val mID = AuthManager.getPatientId().toString()
-//    val patientDB by insightViewModel.getPatientById(mID).collectAsStateWithLifecycle(null)
     val insightsData = insightViewModel.getInsightsById(mID)
-//        listOf(
-//        listOf("Vegetables",patientDB?.vegetableScore.toString(), "10" ),
-//        listOf("Fruits",patientDB?.fruitScore.toString(), "10" ),
-//        listOf("Grains and Cereals", patientDB?.grainsAndCerealScore.toString(), "5"),
-//        listOf("Whole Grains", patientDB?.wholeGrainsScore.toString(), "5"),
-//        listOf("Meat and Alternatives", patientDB?.meatAndAltScore.toString(), "10"),
-//        listOf("Dairy", patientDB?.dairyAndALtScore.toString(), "10"),
-//        listOf("Water", patientDB?.waterScore.toString(), "5"),
-//        listOf("Saturated Fats", patientDB?.saturatedFatScore.toString(), "5"),
-//        listOf("Unsaturated Fats", patientDB?.unsaturatedFatScore.toString(), "5"),
-//        listOf("Sodium", patientDB?.sodiumScore.toString(), "10"),
-//        listOf("Sugar", patientDB?.sugarScore.toString(), "10"),
-//        listOf("Alcohol", patientDB?.alcoholScore.toString(), "5"),
-//        listOf("Discretionary Foods", patientDB?.discretionaryScore.toString(), "10")
-//
-//    )
     val totalScore = insightViewModel.getTotalScore(mID)
     val totalScoreMessage = insightViewModel.getTotalScoreMessage(mID)
 
@@ -230,6 +213,7 @@ fun FoodScoreInsight(data: List<List<String>>) {
                         .padding(start = 15.dp)
                 )
                 Spacer(modifier = Modifier.width(5.dp))
+//                strValue.toIntOrNull() ?: strValue.toFloatOrNull() ?: 0f
                     val sliderPosition = (score.toFloatOrNull() ?: 0f)/ (total.toFloat())
                     Slider(
                         value = sliderPosition, // Sets slider position
