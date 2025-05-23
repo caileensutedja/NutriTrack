@@ -2,6 +2,7 @@ package com.fit2081.fit2081_a3_caileen_34375783.patient
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.LoginScreen.LoginViewModel
 import com.fit2081.fit2081_a3_caileen_34375783.data.AppDatabase
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +19,7 @@ class PatientRepository(applicationContext: Context) {
     // Get database instance and insert the repo
     val database = AppDatabase.getDatabase(applicationContext)
     val patientDao = database.patientDao()
+    var patient = mutableStateOf<Patient?>(null)
 
     /**
      * Inserts the patient calling Dao

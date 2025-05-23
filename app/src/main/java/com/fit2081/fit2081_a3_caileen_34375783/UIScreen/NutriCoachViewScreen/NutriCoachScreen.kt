@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,11 +15,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.*
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -32,11 +40,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -84,7 +94,9 @@ fun NutriCoachPage(navController: NavHostController) {
     val mID = AuthManager.getPatientId().toString()
 
     Column(
-        modifier = Modifier.fillMaxHeight().fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -182,22 +194,39 @@ fun GenAIScreen(
     val uiState by genAiViewModel.uiState.collectAsState()
     var result by remember { mutableStateOf("") }
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .fillMaxHeight(0.5f)
     ) {
 
         Row(
-            modifier = Modifier.padding(all = 16.dp)
+            modifier = Modifier.padding(all = 16.dp).fillMaxWidth()
         ) {
             Button(
                 onClick = {
                     genAiViewModel.sendPrompt()
                 },
-//                enabled = prompt.isNotEmpty(),
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
             ) {
                 Text(text = "Motivational Message (AI)")
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            var showTips = remember { mutableStateOf(false) }
+            var allTips = genAiViewModel.fetchAllTips()
+            Button(
+                onClick = {
+                    showTips.value = !showTips.value
+                },
+                modifier = Modifier.align(Alignment.CenterVertically)
+            ) {
+                Text("Show all tips" )
+            }
+            if (showTips.value) {
+                tipsDialog(
+                    tips = allTips,
+                    onDismiss = { showTips.value = false }
+                )
             }
         }
 
@@ -212,7 +241,6 @@ fun GenAIScreen(
                 textColor = MaterialTheme.colorScheme.onSurface
                 result = (uiState as UiState.Success).outputText
             }
-            val scrollState = rememberScrollState()
             Text(
                 text = result,
                 textAlign = TextAlign.Start,
@@ -220,9 +248,66 @@ fun GenAIScreen(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(16.dp)
-                    .fillMaxSize()
-                    .verticalScroll(scrollState)
             )
+        }
+    }
+}
+
+@Composable
+fun tipsDialog(tips: List<String>, onDismiss: () -> Unit) {
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            color = Color.White,
+            tonalElevation = 8.dp,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+            ) {
+                Text(
+                    text = "AI Tips",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(16.dp)
+                )
+
+                LazyColumn(
+                    modifier = Modifier
+                        .weight(1f, fill = false)
+                        .padding(horizontal = 16.dp)
+                ) {
+                    items(tips) { tip ->
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp),
+                            elevation = CardDefaults.cardElevation(4.dp),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Text(
+                                text = tip,
+                                modifier = Modifier.padding(12.dp),
+                                fontSize = 14.sp
+                            )
+                        }
+                    }
+                }
+
+                Button(
+                    onClick = onDismiss,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(16.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6200EE))
+                ) {
+                    Text(text = "Done", color = Color.White)
+                }
+            }
         }
     }
 }

@@ -6,13 +6,11 @@ import android.widget.Toast
 import androidx.compose.runtime.*
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.fit2081.fit2081_a3_caileen_34375783.FoodIntake.FoodIntake
 import com.fit2081.fit2081_a3_caileen_34375783.FoodIntake.FoodIntakeRepository
 import com.fit2081.fit2081_a3_caileen_34375783.R
 import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -40,7 +38,7 @@ class QuestionnaireViewModel(application: Application) : AndroidViewModel(applic
     var eggs = mutableStateOf(false)
     var nutsSeeds = mutableStateOf(false)
 
-    var persona = mutableStateOf<String?>(null)
+    var persona = mutableStateOf<String>("")
     var timeMeal = mutableStateOf<String>("00:00")
     var timeSleep = mutableStateOf<String>("00:00")
     var timeWakeUp = mutableStateOf<String>("00:00")
