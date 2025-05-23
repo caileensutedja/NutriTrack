@@ -1,4 +1,4 @@
-package com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewModel.GenAI
+package com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewScreen.GenAI
 
 /**
  * A sealed hierarchy describing the state of the text generation.

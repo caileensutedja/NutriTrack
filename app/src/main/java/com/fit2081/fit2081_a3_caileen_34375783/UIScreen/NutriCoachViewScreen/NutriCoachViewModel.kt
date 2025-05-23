@@ -1,4 +1,4 @@
-package com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewModel
+package com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewScreen
 
 import android.app.Application
 import android.util.Log

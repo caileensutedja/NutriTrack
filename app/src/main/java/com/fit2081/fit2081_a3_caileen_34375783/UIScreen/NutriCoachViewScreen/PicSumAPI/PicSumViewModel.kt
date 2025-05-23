@@ -1,4 +1,4 @@
-package com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewModel.PicSumAPI
+package com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewScreen.PicSumAPI
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

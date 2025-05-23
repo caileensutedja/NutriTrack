@@ -1,4 +1,4 @@
-package com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewModel
+package com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewScreen
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -41,13 +41,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
-import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewModel.FruitAPI.FruityAIViewModel
-import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewModel.GenAI.GenAIViewModel
-import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewModel.GenAI.UiState
-import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewModel.PicSumAPI.PicSumViewModel
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewScreen.FruitAPI.FruityAIViewModel
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewScreen.GenAI.GenAIViewModel
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewScreen.GenAI.UiState
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewScreen.PicSumAPI.PicSumViewModel
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.HomeScreen.BottomBar
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.HomeScreen.MyNavHost
-import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.InsightScreen.InsightViewModel
 import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
 import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
 
