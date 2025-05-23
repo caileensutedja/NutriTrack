@@ -49,6 +49,19 @@ class PatientRepository(applicationContext: Context) {
         return patientDao.claimAccount(userId, name, password)
     }
 
+    /**
+     * Gets the average HEIFA for females
+     */
+    suspend fun getAvgHEIFAFemale(): Float? {
+        return patientDao.averageHEIFAFemale()
+    }
+
+    /**
+     * Gets the average HEIFA for males
+     */
+    suspend fun getAvgHEIFAMale(): Float? {
+        return patientDao.averageHEIFAMale()
+    }
 
     /**
      * Function to check from the database if the user and password matches.

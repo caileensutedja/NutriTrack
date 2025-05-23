@@ -55,7 +55,12 @@ import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375
 import android.util.Log
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.fit2081.fit2081_a3_caileen_34375783.R
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.Clinician.ClinicianDashboard
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.Clinician.ClinicianLogin
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.InsightScreen.InsightsScreen
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.LoginScreen.LoginScreen
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.LoginScreen.LoginViewModel
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.LoginScreen.RegisterScreen
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewScreen.NutriCoachPage
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.QuestionnaireScreen.QuestionnairePage
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.SettingScreen.SettingsPage
@@ -227,20 +232,22 @@ fun MyNavHost(
         startDestination = "Home"
     ) {
         composable("Home") {
-//            Log.d("debug navhost homescreen", "in home comp")
             HomePage(navController)
         }
         composable("Insights") {
-//            Log.d("debug navhost homescreen", "in insights comp")
             InsightsScreen(navController)
         }
         composable("NutriCoach") {
-//            Log.d("debug navhost homescreen", "in nutri comp")
             NutriCoachPage(navController)
         }
         composable("Settings") {
-//            Log.d("debug navhost homescreen", "in settings comp")
             SettingsPage(navController)
+        }
+        composable("ClinicianLogin") {
+            ClinicianLogin(navController)
+        }
+        composable("ClinicianDashboard") {
+            ClinicianDashboard(navController)
         }
     }
 }

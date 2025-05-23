@@ -81,21 +81,6 @@ fun InsightsScreen(
     Column (
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
     ) {
-//        Log.d("PATIENT DATA RN: ",
-//            "veg is: " + patientDB?.vegetableScore
-//                    + " and fruit is: " +  patientDB?.fruitScore
-//                    + " and grains and cereals is: " + patientDB?.grainsAndCerealScore +
-//                    " and whole grains is: " + patientDB?.wholeGrainsScore +
-//                    " and meat and alternatives is: " + patientDB?.meatAndAltScore +
-//                    " and dairy is: " + patientDB?.dairyAndALtScore +
-//                    " and water is: " + patientDB?.waterScore +
-//                    " and saturated fats is: " + patientDB?.saturatedFatScore +
-//                    " and unsaturated fats is: " + patientDB?.unsaturatedFatScore +
-//                    " and sodium is: " + patientDB?.sodiumScore +
-//                    " and sugar is: " + patientDB?.sugarScore +
-//                    " and alcohol is: " + patientDB?.alcoholScore +
-//                    " and discretionary foods is: " + patientDB?.discretionaryScore)
-
         Spacer(modifier = Modifier.height(25.dp))
         Row (
             modifier = Modifier.fillMaxWidth(),

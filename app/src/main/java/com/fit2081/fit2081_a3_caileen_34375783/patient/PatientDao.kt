@@ -44,4 +44,15 @@ interface PatientDao {
     @Query("UPDATE patient SET patientName = :name, patientPassword = :password WHERE userID = :userId")
     suspend fun claimAccount(userId: String, name: String, password: String)
 
+    /**
+     * Calculates average HEIFA score for female
+     */
+    @Query("SELECT AVG(CAST(totalScore AS FLOAT)) FROM patient WHERE patientSex = 'Female'")
+    suspend fun averageHEIFAFemale(): Float?
+
+    /**
+     * Calculates average HEIFA score for female
+     */
+    @Query("SELECT AVG(CAST(totalScore AS FLOAT)) FROM patient WHERE patientSex = 'Male'")
+    suspend fun averageHEIFAMale(): Float?
 }

@@ -235,7 +235,7 @@ fun QuestionnaireScreen(){
             fontSize = 13.sp
         )
         OutlinedTextField(
-            value = questionnaireViewModel.persona.value.toString(),
+            value = questionnaireViewModel.persona.value,
             onValueChange = {},
             label = { Text(text = "Select option") },
             modifier = Modifier.fillMaxWidth().padding(2.dp),

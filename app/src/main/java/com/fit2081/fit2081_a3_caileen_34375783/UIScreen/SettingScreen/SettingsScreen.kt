@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.Clinician.ClinicianLogin
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.HomeScreen.BottomBar
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.HomeScreen.MyNavHost
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.LoginScreen.LoginPage
@@ -166,7 +167,7 @@ fun SettingsPage(navHostController: NavHostController){
         Row (modifier = Modifier.fillMaxWidth()){
             Button(
                 onClick = {
-//                    context.startActivity(Intent(context, Clini::class.java))
+                    navHostController.navigate("ClinicianLogin")
                 }
             ){
                 Text("Clinician Login")
