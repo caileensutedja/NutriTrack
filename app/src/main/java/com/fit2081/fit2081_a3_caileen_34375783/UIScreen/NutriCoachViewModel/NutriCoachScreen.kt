@@ -139,7 +139,7 @@ fun FruityUIScreen(
             Spacer(modifier = Modifier.width(10.dp))
             Button(
                 onClick = {
-                    fruitAiViewModel.fetchFruitInfo(fruitName)
+                    fruitAiViewModel.fetchFruitInfo(fruitName.lowercase())
                 },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = fruitName.isNotEmpty()

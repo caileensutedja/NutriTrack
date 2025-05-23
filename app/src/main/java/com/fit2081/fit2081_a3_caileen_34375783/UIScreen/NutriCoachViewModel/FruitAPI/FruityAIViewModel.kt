@@ -42,10 +42,10 @@ class FruityAIViewModel : ViewModel() {
                         _uiState.value = UiState.Error("Empty response body")
                     }
                 } else {
-                    _uiState.value = UiState.Error("HTTP ${response.code()}")
+                    _uiState.value = UiState.Error("Unavailable fruit, consider banana, tomato, strawberry, melon, and others!")
                 }
             } catch (e: Exception) {
-                _uiState.value = UiState.Error(e.localizedMessage ?: "Unknown error")
+                _uiState.value = UiState.Error("Please only type in one fruit")
             }
         }
     }

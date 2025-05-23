@@ -12,7 +12,6 @@ interface FruitAPIService {
     @GET("{fruitname}")
     suspend fun getFruitInfo(@Path("fruitname") fruit: String): Response<FruityResponse>
 
-
     companion object {
 
         var BASE_URL = "https://www.fruityvice.com/api/fruit/"

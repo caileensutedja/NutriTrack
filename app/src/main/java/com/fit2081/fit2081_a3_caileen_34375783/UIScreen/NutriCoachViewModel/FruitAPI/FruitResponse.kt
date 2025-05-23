@@ -5,8 +5,8 @@ data class FruityResponse(
     var nutritions: FruityInfo
 )
 data class FruityInfo(
-    var calories: Int,
-    var fat: Float,
-    var sugar: Float,
-    var carbohydrates: Int,
-    var protein: Int)
+    var calories: String,
+    var fat: String,
+    var sugar: String,
+    var carbohydrates: String,
+    var protein: String)

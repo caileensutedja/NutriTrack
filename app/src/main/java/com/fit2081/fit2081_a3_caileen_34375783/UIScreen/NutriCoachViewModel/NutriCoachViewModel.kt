@@ -22,9 +22,6 @@ class NutriCoachViewModel (application: Application): AndroidViewModel(applicati
             val fruitVariety = patient?.fruitVariety?.toFloatOrNull() ?: 0f
             val fruitServingSize = patient?.fruitServeSize?.toFloatOrNull() ?: 0f
             val totalFruitOptimal = fruitVariety + fruitServingSize
-            Log.d("TRY nutricoach", "nutricoach - variety value is: " + fruitVariety)
-            Log.d("TRY nutricoach", "nutricoach - serving size value is: " + fruitServingSize)
-            Log.d("TRY nutricoach", "nutricoach - total is value is: " + totalFruitOptimal)
 
             // Check if it is optimal or not.
             if (fruitVariety >=2 &&
