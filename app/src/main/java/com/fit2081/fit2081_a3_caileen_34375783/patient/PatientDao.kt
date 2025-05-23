@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.fit2081.fit2081_a3_caileen_34375783.patient.PatientRepository.PatientScoreData
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -55,4 +56,29 @@ interface PatientDao {
      */
     @Query("SELECT AVG(CAST(totalScore AS FLOAT)) FROM patient WHERE patientSex = 'Male'")
     suspend fun averageHEIFAMale(): Float?
+
+    /**
+     * Get all patients data (including gender).
+     */
+    @Query("""
+        SELECT 
+            patientSex,
+            totalScore,
+            discretionaryScore,
+            vegetableScore,
+            fruitScore,
+            grainsAndCerealScore,
+            wholeGrainsScore,
+            meatAndAltScore,
+            dairyAndALtScore,
+            sodiumScore,
+            alcoholScore,
+            waterScore,
+            sugarScore,
+            saturatedFatScore,
+            unsaturatedFatScore
+        FROM patient
+        ORDER BY userID ASC
+    """)
+    fun getAllPatientsData(): Flow<List<PatientScoreData>>
 }

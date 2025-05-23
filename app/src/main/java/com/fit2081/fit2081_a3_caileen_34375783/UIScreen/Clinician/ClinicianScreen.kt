@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,7 +13,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -19,10 +26,19 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -30,6 +46,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.HomeScreen.BottomBar
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.HomeScreen.MyNavHost
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewScreen.GenAI.UiState
 import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
 
 
@@ -112,6 +129,10 @@ fun ClinicianLogin(navController: NavHostController) {
 @Composable
 fun ClinicianDashboard(navController: NavHostController) {
     val clinicianViewModel: ClinicianViewModel = viewModel()
+    val uiState by clinicianViewModel.uiState.collectAsState()
+    var result by remember { mutableStateOf("") }
+
+
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -139,10 +160,33 @@ fun ClinicianDashboard(navController: NavHostController) {
             HorizontalDivider()
             Spacer(modifier = Modifier.height(10.dp))
             Button(
-                onClick = {},
+                onClick = {
+                    clinicianViewModel.findDataPattern()
+                },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 Text("Find Data Pattern")
+            }
+            Spacer(modifier = Modifier.height(15.dp))
+            if (uiState is UiState.Loading) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+            } else {
+//                var textColor = MaterialTheme.colorScheme.onSurface
+                if (uiState is UiState.Error) {
+//                    textColor = MaterialTheme.colorScheme.error
+                    result = (uiState as UiState.Error).errorMessage
+                } else if (uiState is UiState.Success) {
+                    result = (uiState as UiState.Success).outputText
+                    PrettyTextView(result)
+                }
+//                Text(
+//                    text = PrettyTextView(result),
+//                    textAlign = TextAlign.Start,
+//                    color = textColor,
+//                    modifier = Modifier
+//                        .align(Alignment.CenterHorizontally)
+//                        .padding(16.dp)
+//                )
             }
 
             Spacer(modifier = Modifier.weight(1f))
@@ -155,5 +199,49 @@ fun ClinicianDashboard(navController: NavHostController) {
                 Text("Done")
             }
         }
+    }
+}
+
+@Composable
+fun PrettyTextView(text: String) {
+    // Define scrollable state
+    val scrollState = rememberScrollState()
+
+    // Build AnnotatedString to format bold text
+    val annotatedText = buildAnnotatedString {
+        var startIndex = 0
+        while (startIndex < text.length) {
+            val boldStart = text.indexOf("**", startIndex)
+            if (boldStart != -1) {
+                val boldEnd = text.indexOf("**", boldStart + 2)
+                if (boldEnd != -1) {
+                    // Add normal text before the bold part
+                    append(text.substring(startIndex, boldStart))
+
+                    // Add bold text
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                        append(text.substring(boldStart + 2, boldEnd))
+                    }
+
+                    // Move to next part after the second "**"
+                    startIndex = boldEnd + 2
+                } else {
+                    break
+                }
+            } else {
+                append(text.substring(startIndex))
+                break
+            }
+        }
+    }
+
+    // Display the formatted text inside a scrollable container with a border
+    Column(
+        modifier = Modifier
+            .verticalScroll(scrollState)
+            .border(BorderStroke(2.dp, Color.LightGray), shape = RoundedCornerShape(16.dp))
+            .padding(16.dp) // Add padding for better spacing
+    ) {
+        BasicText(text = annotatedText)
     }
 }

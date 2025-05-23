@@ -10,6 +10,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
@@ -61,6 +62,78 @@ class PatientRepository(applicationContext: Context) {
      */
     suspend fun getAvgHEIFAMale(): Float? {
         return patientDao.averageHEIFAMale()
+    }
+
+
+    data class PatientScoreData(
+        val patientSex: String,
+        val totalScore: String,
+        val discretionaryScore: String,
+        val vegetableScore: String,
+        val fruitScore: String,
+        val grainsAndCerealScore: String,
+        val wholeGrainsScore: String,
+        val meatAndAltScore: String,
+        val dairyAndALtScore: String,
+        val sodiumScore: String,
+        val alcoholScore: String,
+        val waterScore: String,
+        val sugarScore: String,
+        val saturatedFatScore: String,
+        val unsaturatedFatScore: String
+    )
+
+    /**
+     * Gets the flow of all patients gender and all scores.
+     */
+//    fun getAllPatientsData(): Flow<List<PatientScoreData>> {
+//        return patientDao.getAllPatientsData()
+//    }
+    suspend fun getAllPatientsData(): Flow<List<List<String>>> {
+        return patientDao.getAllPatientsData().map { patientList ->
+            // Add headings at the top
+            val headings = listOf(
+                "Gender",
+                "Total Score",
+                "Discretionary Score",
+                "Vegetable Score",
+                "Fruit Score",
+                "Grains and Cereal Score",
+                "Whole Grains Score",
+                "Meat and Alt Score",
+                "Dairy and Alt Score",
+                "Sodium Score",
+                "Alcohol Score",
+                "Water Score",
+                "Sugar Score",
+                "Saturated Fat Score",
+                "Unsaturated Fat Score"
+            )
+
+            // Map the PatientScoreData to a List<String> (for each patient)
+            val patientScores = patientList.map { patient ->
+                listOf(
+                    patient.patientSex,
+                    patient.totalScore,
+                    patient.discretionaryScore,
+                    patient.vegetableScore,
+                    patient.fruitScore,
+                    patient.grainsAndCerealScore,
+                    patient.wholeGrainsScore,
+                    patient.meatAndAltScore,
+                    patient.dairyAndALtScore,
+                    patient.sodiumScore,
+                    patient.alcoholScore,
+                    patient.waterScore,
+                    patient.sugarScore,
+                    patient.saturatedFatScore,
+                    patient.unsaturatedFatScore
+                )
+            }
+
+            // Combine headings and patient data
+            listOf(headings) + patientScores
+        }
     }
 
     /**
