@@ -1,8 +1,8 @@
-package com.fit2081.fit2081_a3_caileen_34375783.FruitAPI
+package com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewModel.FruitAPI
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.fit2081.fit2081_a3_caileen_34375783.GenAI.UiState
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewModel.GenAI.UiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

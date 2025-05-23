@@ -1,14 +1,14 @@
-package com.fit2081.fit2081_a3_caileen_34375783.UIScreen
+package com.fit2081.fit2081_a3_caileen_34375783.UIScreen.QuestionnaireScreen
 
 import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -40,7 +39,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -55,13 +53,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.fit2081.fit2081_a3_caileen_34375783.FoodIntake.FoodIntake
-import com.fit2081.fit2081_a3_caileen_34375783.FoodIntake.FoodIntakeViewModel
-import com.fit2081.fit2081_a3_caileen_34375783.R
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.HomeScreen.HomeViewModel
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.InsightScreen.InsightsPage
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.LoginScreen.LoginPage
-import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
 import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -69,7 +64,6 @@ import java.util.Calendar
 
 class QuestionnairePage : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        val foodIntakeViewModel: FoodIntakeViewModel by viewModels()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
@@ -84,7 +78,7 @@ class QuestionnairePage : ComponentActivity() {
                     ) {
                         TopAppBar()
                         Log.d("CRASH ISSUE", "passes before qscreen")
-                        QuestionnaireScreen(foodIntakeViewModel)
+                        QuestionnaireScreen()
                         Log.d("CRASH ISSUE", "passes after qscreen")
                     }
                 }
@@ -142,111 +136,14 @@ fun LabeledCheckbox(item: FoodCheckboxItem) {
 }
 //@Preview(showBackground = true)
 @Composable
-fun QuestionnaireScreen(foodIntakeViewModel: FoodIntakeViewModel){
-    val mID = AuthManager.getPatientId().toString()
-    val foodIntakeAttempt by foodIntakeViewModel.getQuizAttemptByPatientId(mID).collectAsStateWithLifecycle(null)
-
-    Log.d("CRASH ISSUE", "in qscreen")
+fun QuestionnaireScreen(){
+    val questionnaireViewModel: QuestionnaireViewModel = viewModel()
     val mContext = LocalContext.current
-
-    var mCheckBoxFruits = remember { mutableStateOf(false) }
-    var mCheckBoxVegetables = remember { mutableStateOf(false) }
-    var mCheckBoxGrains = remember { mutableStateOf(false) }
-    var mCheckBoxRedMeat = remember { mutableStateOf(false) }
-    var mCheckBoxSeafood = remember { mutableStateOf(false) }
-    var mCheckBoxPoultry = remember { mutableStateOf(false) }
-    var mCheckBoxFish = remember { mutableStateOf(false) }
-    var mCheckBoxEggs = remember { mutableStateOf(false) }
-    var mCheckBoxNutsSeeds = remember { mutableStateOf(false) }
-
-    // For Persona Choice
-    val personaChoices = listOf("Health Devotee", "Mindful Eater", "Wellness Striver", "Balance Seeker", "Health Procrastinator", "Food Carefree")
     var expanded by remember { mutableStateOf(false) }
-    var mSelectedPersona by remember { mutableStateOf("") }
-
-    // For Time Pickers
-    var mTimeMeal = remember { mutableStateOf("") }
-    var mTimeSleep = remember { mutableStateOf("") }
-    var mTimeWakeUp = remember { mutableStateOf("") }
-
-    var mTimeMealPickerDialog = timePickerFun(mTimeMeal)
-    var mTimeSleepPickerDialog = timePickerFun(mTimeSleep)
-    var mTimeWakeUpPickerDialog = timePickerFun(mTimeWakeUp)
-
-    val categoryByColumn = listOf(
-        listOf(
-            FoodCheckboxItem("Fruits", mCheckBoxFruits),
-            FoodCheckboxItem("Vegetables", mCheckBoxVegetables),
-            FoodCheckboxItem("Grains", mCheckBoxGrains)
-        ),
-        listOf(
-            FoodCheckboxItem("Red Meat", mCheckBoxRedMeat),
-            FoodCheckboxItem("Seafood", mCheckBoxSeafood),
-            FoodCheckboxItem("Poultry", mCheckBoxPoultry)
-        ),
-        listOf(
-            FoodCheckboxItem("Fish", mCheckBoxFish),
-            FoodCheckboxItem("Eggs", mCheckBoxEggs),
-            FoodCheckboxItem("Nuts/Seeds", mCheckBoxNutsSeeds)
-        )
-    )
-
-    val personaList = listOf(
-        PersonaChoice(
-            "Health Devotee",
-            "I’m passionate about healthy eating & health plays a big part in my life...",
-            R.drawable.persona_1
-        ),
-        PersonaChoice(
-            "Mindful Eater",
-            "I’m health-conscious and being healthy and eating healthy is important to me...",
-            R.drawable.persona_2
-        ),
-        PersonaChoice(
-            "Wellness Striver",
-            "I aspire to be healthy (but struggle sometimes). Healthy eating is hard work...",
-            R.drawable.persona_3
-        ),
-        PersonaChoice(
-            "Balance Seeker",
-            "I try and live a balanced lifestyle, and I think that all foods are okay in moderation...",
-            R.drawable.persona_4
-        ),
-        PersonaChoice(
-            "Health Procrastinator",
-            "I’m contemplating healthy eating but it’s not a priority for me right now...",
-            R.drawable.persona_5
-        ),
-        PersonaChoice(
-            "Food Carefree",
-            "I’m not bothered about healthy eating. I don’t really see the point and I don’t think about it...",
-            R.drawable.persona_6
-        )
-    )
-
-//    validateTime("08:18", "22:00", "15.30")
-//    Log.d("time vali", "time vali" +     validateTime("08:18", "22:00", "15.30")
-    LaunchedEffect(foodIntakeAttempt) {
-        if (foodIntakeAttempt != null){
-            mCheckBoxFruits.value = foodIntakeAttempt?.fruit == true
-            mCheckBoxVegetables.value = foodIntakeAttempt?.vegetable == true
-            mCheckBoxGrains.value = foodIntakeAttempt?.grains == true
-            mCheckBoxRedMeat.value = foodIntakeAttempt?.redMeat == true
-            mCheckBoxSeafood.value = foodIntakeAttempt?.seafood == true
-            mCheckBoxPoultry.value = foodIntakeAttempt?.poultry == true
-            mCheckBoxFish.value = foodIntakeAttempt?.fish == true
-            mCheckBoxEggs.value = foodIntakeAttempt?.eggs == true
-            mCheckBoxNutsSeeds.value = foodIntakeAttempt?.nutsSeeds == true
-            mSelectedPersona = foodIntakeAttempt?.persona.toString()
-            mTimeMeal.value = foodIntakeAttempt?.timeMeal.toString()
-            mTimeSleep.value = foodIntakeAttempt?.timeSleep.toString()
-            mTimeWakeUp.value = foodIntakeAttempt?.timeWakeup.toString()
-
-            //to next screen, alr have attempt
-            Log.d("FOOD INTAKE ATTEMPT", "FOOD INTAKE ATTEMPT - HAS ATTEMPT" + foodIntakeAttempt?.fruit)
-
-        }
-    }
+    // Needed to show the dialogs.
+    var mTimeMealPickerDialog = timePickerFun(questionnaireViewModel.timeMeal)
+    var mTimeSleepPickerDialog = timePickerFun(questionnaireViewModel.timeSleep)
+    var mTimeWakeUpPickerDialog = timePickerFun(questionnaireViewModel.timeWakeUp)
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -278,7 +175,7 @@ fun QuestionnaireScreen(foodIntakeViewModel: FoodIntakeViewModel){
                     .padding(start = 1.dp, end = 1.dp),
                 horizontalArrangement = Arrangement.spacedBy(2.dp)
             ) {
-                categoryByColumn.forEach { catColumn ->
+                questionnaireViewModel.categoryByColumn.forEach { catColumn ->
                     Column(horizontalAlignment = Alignment.Start) {
                         catColumn.forEach { item ->
                             LabeledCheckbox(item)
@@ -310,7 +207,7 @@ fun QuestionnaireScreen(foodIntakeViewModel: FoodIntakeViewModel){
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            personaList.chunked(3).forEach { rowItems ->
+            questionnaireViewModel.personaList.chunked(3).forEach { rowItems ->
                 Row(horizontalArrangement = Arrangement.spacedBy(3.dp)) {
                     rowItems.forEach { persona ->
                         Button(
@@ -338,7 +235,7 @@ fun QuestionnaireScreen(foodIntakeViewModel: FoodIntakeViewModel){
             fontSize = 13.sp
         )
         OutlinedTextField(
-            value = mSelectedPersona,
+            value = questionnaireViewModel.persona.value.toString(),
             onValueChange = {},
             label = { Text(text = "Select option") },
             modifier = Modifier.fillMaxWidth().padding(2.dp),
@@ -359,11 +256,11 @@ fun QuestionnaireScreen(foodIntakeViewModel: FoodIntakeViewModel){
             onDismissRequest = { expanded = false },
             modifier = Modifier.fillMaxWidth(0.8f)
         ) {
-            personaChoices.forEach { persona ->
+            questionnaireViewModel.personaList.forEach { persona ->
                 DropdownMenuItem(
-                    text = { Text(persona) },
+                    text = { Text(persona.name) },
                     onClick = {
-                        mSelectedPersona = persona
+                        questionnaireViewModel.persona.value = persona.name
                         expanded = false
                     }
                 )
@@ -404,55 +301,33 @@ fun QuestionnaireScreen(foodIntakeViewModel: FoodIntakeViewModel){
                 verticalArrangement = Arrangement.spacedBy(0.dp)
 
             ) {
+                //Meal
                 Button(onClick = { mTimeMealPickerDialog.show()}) {
                     Text("Pick Time", fontSize = 10.sp)
                 }
-                Text(text = "Selected time: ${mTimeMeal.value}", fontSize = 7.sp,
+                Text(text = "Selected time: ${questionnaireViewModel.timeMeal.value}", fontSize = 7.sp,
                     modifier = Modifier.padding(1.dp))
-                Button(onClick = { mTimeSleepPickerDialog.show() }) {
+                //Sleep
+                Button(onClick = {
+                    mTimeSleepPickerDialog.show()
+                }
+                ) {
                     Text("Pick Time", fontSize = 10.sp)
                 }
-                Text(text = "Selected time: ${mTimeSleep.value}", fontSize = 7.sp)
+                //Wakeup
+                Text(text = "Selected time: ${questionnaireViewModel.timeSleep.value}", fontSize = 7.sp)
                 Button(onClick = { mTimeWakeUpPickerDialog.show() }) {
                     Text("Pick Time", fontSize = 10.sp)
                 }
-                Text(text = "Selected time: ${mTimeWakeUp.value}", fontSize = 7.sp)
+                Text(text = "Selected time: ${questionnaireViewModel.timeWakeUp.value}", fontSize = 7.sp)
             }
         }
         // Save Button
         Row {
             Button(onClick = {
-                // Validate: No empty Strings
-                if (mSelectedPersona.isNotEmpty() && mTimeMeal.value.isNotEmpty() && mTimeSleep.value.isNotEmpty() && mTimeWakeUp.value.isNotEmpty()){
-                    // Validate: TimePickers reasonable time. Eat should be after waking up and before sleeping.
-                    if (validateTime(mTimeSleep.value, mTimeWakeUp.value, mTimeMeal.value)) {
-                    var foodIntakeAnswer: FoodIntake = FoodIntake(
-                        userID = AuthManager.getPatientId().toString(),
-                        fruit =  mCheckBoxFruits.value,
-                        vegetable =  mCheckBoxVegetables.value,
-                        grains =  mCheckBoxGrains.value,
-                        redMeat = mCheckBoxRedMeat.value,
-                        seafood = mCheckBoxSeafood.value,
-                        poultry = mCheckBoxPoultry.value,
-                        fish = mCheckBoxFish.value,
-                        eggs = mCheckBoxEggs.value,
-                        nutsSeeds = mCheckBoxNutsSeeds.value,
-                        persona = mSelectedPersona,
-                        timeMeal = mTimeMeal.value,
-                        timeSleep = mTimeSleep.value,
-                        timeWakeup = mTimeWakeUp.value
-                    )
-
-                    foodIntakeViewModel.attemptFoodIntake(foodIntakeAnswer)
-
+                if(questionnaireViewModel.submit()) {
+                    // Only go next if it is successful.
                     mContext.startActivity(Intent(mContext, InsightsPage::class.java))
-                    } else{
-                        Toast.makeText(mContext, "Please choose reasonable timings, where meals are after waking up and before sleeping.", Toast.LENGTH_LONG).show()
-                    }
-            } else {
-                    // Error message to fill in the questionnaire.
-                    Toast.makeText(mContext, "Please complete all parts of the questionnaire.", Toast.LENGTH_LONG).show()
-
                 }
             }){
                 Text(text = "Save")
@@ -531,22 +406,4 @@ fun timePickerFun(mTime: MutableState<String>): TimePickerDialog {
         // To user 24h format or not
         }, mHour, mMinute, false
     )
-}
-
-fun validateTime(sleepTimeStr: String, wakeTimeStr: String, eatTimeStr: String): Boolean {
-    val formatter = DateTimeFormatter.ofPattern("HH:mm")
-    val sleepTime = LocalTime.parse(sleepTimeStr, formatter)
-    val wakeTime = LocalTime.parse(wakeTimeStr, formatter)
-    val eatTime = LocalTime.parse(eatTimeStr, formatter)
-
-    // Logically not possible to do this
-    if (sleepTime == wakeTime || sleepTime == eatTime || wakeTime == eatTime) return false
-
-    return if (sleepTime.isBefore(wakeTime)) {
-        // Sleep and wake on the same day - sleeps on the am
-        eatTime.isBefore(sleepTime) || eatTime.isAfter(wakeTime)
-    } else {
-        // during the day - sleeps properly
-        eatTime.isAfter(wakeTime) && eatTime.isBefore(sleepTime)
-    }
 }

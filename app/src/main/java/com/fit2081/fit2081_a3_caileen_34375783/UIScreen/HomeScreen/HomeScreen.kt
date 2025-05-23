@@ -57,7 +57,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.fit2081.fit2081_a3_caileen_34375783.R
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.InsightScreen.InsightsScreen
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewModel.NutriCoachPage
-import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.QuestionnairePage
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.QuestionnaireScreen.QuestionnairePage
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.SettingScreen.SettingsPage
 import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
 

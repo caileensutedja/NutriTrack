@@ -28,5 +28,7 @@ data class Patient(
     val waterScore: String, //WaterHEIFAscore
     val sugarScore: String, //SugarHEIFAscore
     val saturatedFatScore: String, //SaturatedFatHEIFAscore
-    val unsaturatedFatScore: String //UnsaturatedFatHEIFAscore
+    val unsaturatedFatScore: String, //UnsaturatedFatHEIFAscore
+    val fruitServeSize: String, // Serving size, Fruitservesize
+    val fruitVariety: String // Variety Fruitvariationsscore
 )

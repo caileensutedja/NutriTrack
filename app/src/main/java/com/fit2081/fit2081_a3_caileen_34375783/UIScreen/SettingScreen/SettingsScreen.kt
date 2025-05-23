@@ -32,7 +32,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -40,7 +39,6 @@ import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.HomeScreen.BottomBar
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.HomeScreen.MyNavHost
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.LoginScreen.LoginPage
 import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
-import com.fit2081.fit2081_a3_caileen_34375783.patient.PatientViewModel
 import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
 
 class SettingsScreen : ComponentActivity() {

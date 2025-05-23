@@ -1,4 +1,4 @@
-package com.fit2081.fit2081_a3_caileen_34375783.FruitAPI
+package com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewModel.FruitAPI
 
 data class FruityResponse(
     var family: String,

@@ -30,13 +30,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.fit2081.fit2081_a3_caileen_34375783.patient.PatientViewModel
 import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
 
 import android.util.Log;
 import androidx.compose.runtime.LaunchedEffect
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.LoginScreen.LoginPage
-import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.QuestionnairePage
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.QuestionnaireScreen.QuestionnairePage
 import com.fit2081.fit2081_a3_caileen_34375783.R
 import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
 

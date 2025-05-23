@@ -1,10 +1,9 @@
-package com.fit2081.fit2081_a3_caileen_34375783.UIScreen
+package com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewModel
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -42,11 +41,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
-import com.fit2081.fit2081_a3_caileen_34375783.FruitAPI.FruityAIViewModel
-import com.fit2081.fit2081_a3_caileen_34375783.GenAI.GenAIViewModel
-import com.fit2081.fit2081_a3_caileen_34375783.GenAI.UiState
-import com.fit2081.fit2081_a3_caileen_34375783.PicSumAPI.PicSumViewModel
-import com.fit2081.fit2081_a3_caileen_34375783.patient.PatientViewModel
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewModel.FruitAPI.FruityAIViewModel
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewModel.GenAI.GenAIViewModel
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewModel.GenAI.UiState
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewModel.PicSumAPI.PicSumViewModel
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.HomeScreen.BottomBar
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.HomeScreen.MyNavHost
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.InsightScreen.InsightViewModel
+import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
 import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
 
 
@@ -79,7 +81,8 @@ class NutriCoachScreen : ComponentActivity() {
 
 @Composable
 fun NutriCoachPage(navController: NavHostController) {
-    val patientViewModel: PatientViewModel = viewModel()
+    val nutriCoachViewModel: NutriCoachViewModel = viewModel()
+    val mID = AuthManager.getPatientId().toString()
 
     Column(
         modifier = Modifier.fillMaxHeight().fillMaxWidth(),
@@ -94,9 +97,13 @@ fun NutriCoachPage(navController: NavHostController) {
             fontWeight = FontWeight.Bold,
         )
         Spacer(modifier = Modifier.height(10.dp))
-        //Logic here
-        PicSumScreen(modifier = Modifier.fillMaxHeight(0.4f))
-//        FruityUIScreen(modifier = Modifier.fillMaxHeight(0.4f))
+
+        if (nutriCoachViewModel.isFruitScoreOptimal(mID)) {
+            //Logic here
+            PicSumScreen(modifier = Modifier.fillMaxHeight(0.4f))
+        } else {
+            FruityUIScreen(modifier = Modifier.fillMaxHeight(0.4f))
+        }
         Spacer(modifier = Modifier.height(10.dp))
         HorizontalDivider()
         Spacer(modifier = Modifier.height(10.dp))
@@ -221,8 +228,6 @@ fun GenAIScreen(
     }
 }
 
-
-//@Preview(showBackground = true)
 @Composable
 fun PicSumScreen(
     modifier: Modifier = Modifier.fillMaxHeight(0.5f)
