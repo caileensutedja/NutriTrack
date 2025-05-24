@@ -93,8 +93,7 @@ fun NutriCoachPage(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxHeight()
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState()),
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
