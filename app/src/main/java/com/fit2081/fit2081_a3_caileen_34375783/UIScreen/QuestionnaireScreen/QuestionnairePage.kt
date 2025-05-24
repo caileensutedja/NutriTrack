@@ -118,11 +118,17 @@ fun TopAppBar() {
     )
 }
 
+/**
+ * Data class for the food checkbox items.
+ */
 data class FoodCheckboxItem(
     val label: String,
     val state: MutableState<Boolean>
 )
 
+/**
+ * Function to show and provide checkboxes.
+ */
 @Composable
 fun LabeledCheckbox(item: FoodCheckboxItem) {
     Row(verticalAlignment = Alignment.CenterVertically
@@ -134,7 +140,8 @@ fun LabeledCheckbox(item: FoodCheckboxItem) {
         Text(text = item.label)
     }
 }
-//@Preview(showBackground = true)
+
+
 @Composable
 fun QuestionnaireScreen(){
     val questionnaireViewModel: QuestionnaireViewModel = viewModel()
@@ -148,7 +155,7 @@ fun QuestionnaireScreen(){
         modifier = Modifier
             .fillMaxSize()
             .padding(8.dp)
-            .verticalScroll(rememberScrollState()), // ADDED AFTER ASSIGNMENT SUBMISSION - TO SCROLL!!!!!!!
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -178,14 +185,13 @@ fun QuestionnaireScreen(){
                 questionnaireViewModel.categoryByColumn.forEach { catColumn ->
                     Column(horizontalAlignment = Alignment.Start) {
                         catColumn.forEach { item ->
-                            LabeledCheckbox(item)
+                            LabeledCheckbox(item) // Shows the checkboxes
                         }
                     }
                 }
             }
         }
         Spacer(modifier = Modifier.padding(4.dp))
-
         /**
          * Persona Selection Section
          */
@@ -336,12 +342,18 @@ fun QuestionnaireScreen(){
     }
 }
 
+/**
+ * Data class for the persona choice.
+ */
 data class PersonaChoice(
     val name: String,
     val description: String,
     val imageResId: Int
 )
 
+/**
+ * Persona Model function to show each within its own modal.
+ */
 @Composable
 fun PersonaModal(persona: PersonaChoice, onDismiss: () -> Unit) {
     AlertDialog(

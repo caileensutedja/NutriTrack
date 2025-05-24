@@ -2,6 +2,7 @@ package com.fit2081.fit2081_a3_caileen_34375783.UIScreen.HomeScreen
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -16,6 +17,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
@@ -46,25 +49,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
-import android.util.Log
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.fit2081.fit2081_a3_caileen_34375783.R
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.Clinician.ClinicianDashboard
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.Clinician.ClinicianLogin
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.InsightScreen.InsightsScreen
-import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.LoginScreen.LoginScreen
-import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.LoginScreen.LoginViewModel
-import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.LoginScreen.RegisterScreen
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewScreen.NutriCoachPage
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.QuestionnaireScreen.QuestionnairePage
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.SettingScreen.SettingsPage
 import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
+import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
 
 class HomeScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,12 +99,12 @@ fun HomePage(navController: NavHostController) {
     val homeViewModel: HomeViewModel = viewModel()
     val totalScore = homeViewModel.getTotalScore(mID)
     val name = homeViewModel.getName(mID)
-//    val patientDB by patientViewModel.getPatientById(mID).collectAsStateWithLifecycle(null)
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(10.dp),
+            .padding(10.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         Text(
             text = "Hello,",
@@ -163,7 +162,6 @@ fun HomePage(navController: NavHostController) {
                 modifier = Modifier.weight(1f) // to put the button on the far right
             )
             Button(onClick = {
-
                 navController.navigate("Insights")
             },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
@@ -199,7 +197,7 @@ fun HomePage(navController: NavHostController) {
             Text(text = "$totalScore/100",
             color = Color.Green,
             fontWeight = FontWeight.Bold
-        )
+            )
         }
         Spacer(modifier = Modifier.height(20.dp))
         HorizontalDivider()

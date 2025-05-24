@@ -46,13 +46,13 @@ interface PatientDao {
     suspend fun claimAccount(userId: String, name: String, password: String)
 
     /**
-     * Calculates average HEIFA score for female
+     * Calculates average HEIFA score for female.
      */
     @Query("SELECT AVG(CAST(totalScore AS FLOAT)) FROM patient WHERE patientSex = 'Female'")
     suspend fun averageHEIFAFemale(): Float?
 
     /**
-     * Calculates average HEIFA score for female
+     * Calculates average HEIFA score for male.
      */
     @Query("SELECT AVG(CAST(totalScore AS FLOAT)) FROM patient WHERE patientSex = 'Male'")
     suspend fun averageHEIFAMale(): Float?
@@ -60,25 +60,9 @@ interface PatientDao {
     /**
      * Get all patients data (including gender).
      */
-    @Query("""
-        SELECT 
-            patientSex,
-            totalScore,
-            discretionaryScore,
-            vegetableScore,
-            fruitScore,
-            grainsAndCerealScore,
-            wholeGrainsScore,
-            meatAndAltScore,
-            dairyAndALtScore,
-            sodiumScore,
-            alcoholScore,
-            waterScore,
-            sugarScore,
-            saturatedFatScore,
-            unsaturatedFatScore
-        FROM patient
-        ORDER BY userID ASC
-    """)
+    @Query(" SELECT patientSex, totalScore, discretionaryScore, vegetableScore, fruitScore, " +
+            "grainsAndCerealScore, wholeGrainsScore, meatAndAltScore, dairyAndALtScore, " +
+            "sodiumScore, alcoholScore, waterScore, sugarScore, saturatedFatScore, " +
+            "unsaturatedFatScore FROM patient ORDER BY userID ASC")
     fun getAllPatientsData(): Flow<List<PatientScoreData>>
 }

@@ -1,7 +1,6 @@
 package com.fit2081.fit2081_a3_caileen_34375783.patient
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.LoginScreen.LoginViewModel
 import com.fit2081.fit2081_a3_caileen_34375783.data.AppDatabase
@@ -23,7 +22,7 @@ class PatientRepository(applicationContext: Context) {
     var patient = mutableStateOf<Patient?>(null)
 
     /**
-     * Inserts the patient calling Dao
+     * Inserts the patient through calling Dao.
      */
     suspend fun insertPatient(patient: Patient): Long {
         return withContext(Dispatchers.IO) {
@@ -64,7 +63,9 @@ class PatientRepository(applicationContext: Context) {
         return patientDao.averageHEIFAMale()
     }
 
-
+    /**
+     * Creating data class to get certain patient data.
+     */
     data class PatientScoreData(
         val patientSex: String,
         val totalScore: String,
@@ -84,12 +85,9 @@ class PatientRepository(applicationContext: Context) {
     )
 
     /**
-     * Gets the flow of all patients gender and all scores.
+     * Gets the flow of all patients gender and all scores and makes it into a string with headers.
      */
-//    fun getAllPatientsData(): Flow<List<PatientScoreData>> {
-//        return patientDao.getAllPatientsData()
-//    }
-    suspend fun getAllPatientsData(): Flow<List<List<String>>> {
+     fun getAllPatientsData(): Flow<List<List<String>>> {
         return patientDao.getAllPatientsData().map { patientList ->
             // Add headings at the top
             val headings = listOf(
@@ -109,8 +107,7 @@ class PatientRepository(applicationContext: Context) {
                 "Saturated Fat Score",
                 "Unsaturated Fat Score"
             )
-
-            // Map the PatientScoreData to a List<String> (for each patient)
+            // Maping the PatientScoreData to a List<String>
             val patientScores = patientList.map { patient ->
                 listOf(
                     patient.patientSex,
@@ -130,7 +127,6 @@ class PatientRepository(applicationContext: Context) {
                     patient.unsaturatedFatScore
                 )
             }
-
             // Combine headings and patient data
             listOf(headings) + patientScores
         }
@@ -141,7 +137,6 @@ class PatientRepository(applicationContext: Context) {
      */
     suspend fun checkLogin(userId: String, password: String): LoginViewModel.LoginResult {
         val patient = patientDao.getPatientById(userId).firstOrNull()
-
         return when {
             patient == null -> LoginViewModel.LoginResult.AccountNotFound
             patient.patientPassword.isEmpty() -> LoginViewModel.LoginResult.AccountNotClaimed
@@ -173,7 +168,6 @@ class PatientRepository(applicationContext: Context) {
         val patients = patientDao.getAllPatients().first()
         // Check if that list is empty or not
         if (patients.isEmpty()) {
-            Log.d("DEBUG", "empty db in loadDB in Repo")
             // If it's empty, then read the CSV
             readCSVInsert(context, fileName)
         }
@@ -196,6 +190,7 @@ class PatientRepository(applicationContext: Context) {
                 // Gets the sex of the patient
                 val sex = columns[header.indexOf("Sex")]
 
+                // Gets the data based on column heading
                 val patient = Patient(
                     userID = columns[header.indexOf("User_ID")],
                     patientPhoneNumber = columns[header.indexOf("PhoneNumber")],
@@ -219,8 +214,6 @@ class PatientRepository(applicationContext: Context) {
                     fruitServeSize = columns[header.indexOf("Fruitservesize")],
                     fruitVariety = columns[header.indexOf("Fruitvariationsscore")]
                 )
-                Log.d("DEBUG", "patients is: " + patient)
-
                 GlobalScope.launch {
                     withContext(Dispatchers.IO) {
                         insertPatient(patient)
@@ -230,7 +223,6 @@ class PatientRepository(applicationContext: Context) {
             reader.close()
         } catch (e: Exception) {
         e.printStackTrace()
-    }
-
+        }
     }
 }

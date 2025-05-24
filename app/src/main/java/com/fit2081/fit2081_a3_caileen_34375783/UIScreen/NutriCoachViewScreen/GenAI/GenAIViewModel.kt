@@ -2,26 +2,25 @@ package com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewScreen.Ge
 
 import android.app.Application
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fit2081.fit2081_a3_caileen_34375783.NutriCoachTips.NutriCoachTips
 import com.fit2081.fit2081_a3_caileen_34375783.NutriCoachTips.NutriCoachTipsRepository
 import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
 import com.fit2081.fit2081_a3_caileen_34375783.patient.PatientRepository
+import com.google.ai.client.generativeai.GenerativeModel
+import com.google.ai.client.generativeai.type.content
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import com.google.ai.client.generativeai.GenerativeModel
-import com.google.ai.client.generativeai.type.content
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 
 const val apiKey = "AIzaSyCMYsXnBu61hKXC88r-q7thMryuh1dT3M8"
-
+/**
+ * Inspired by Lab Week 7 about Gen AI.
+ */
 class GenAIViewModel (application: Application): AndroidViewModel(application) {
     private val _uiState: MutableStateFlow<UiState> =
         MutableStateFlow(UiState.Initial)
@@ -40,29 +39,8 @@ class GenAIViewModel (application: Application): AndroidViewModel(application) {
              "intake or a fun food tip, they have a fruit score of ${getFruitScore()}/10 (don't mention score)."
 
     /**
-     * To get the fruit score for GenAI tips.
+     * Sends prompt and gets a reponse.
      */
-    private fun getFruitScore(){
-        viewModelScope.launch {
-            val patient = patientRepository.getPatientById(userId)
-            fruitScore.value = patient.first().fruitScore
-        }
-    }
-
-    var allTips: List<String> = emptyList()
-    init {
-        viewModelScope.launch {
-            nutriCoachRepository.getAllTips(userId).collect { tips ->
-                allTips = tips
-            }
-            }
-    }
-
-    // Load all tips from the repository
-    fun fetchAllTips(): List<String> {
-        return allTips
-    }
-
     fun sendPrompt() {
         _uiState.value = UiState.Loading
 
@@ -86,6 +64,32 @@ class GenAIViewModel (application: Application): AndroidViewModel(application) {
                 _uiState.value = UiState.Error(e.localizedMessage ?: "")
             }
         }
+    }
+
+    /**
+     * To get the fruit score for GenAI tips.
+     */
+    private fun getFruitScore(){
+        viewModelScope.launch {
+            val patient = patientRepository.getPatientById(userId)
+            fruitScore.value = patient.first().fruitScore
+        }
+    }
+
+    var allTips: List<String> = emptyList()
+    init {
+        viewModelScope.launch {
+            nutriCoachRepository.getAllTips(userId).collect { tips ->
+                allTips = tips
+            }
+        }
+    }
+
+    /**
+     * Fetches all tips from the database.
+     */
+    fun fetchAllTips(): List<String> {
+        return allTips
     }
 
 }

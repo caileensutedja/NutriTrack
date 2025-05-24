@@ -43,6 +43,5 @@ abstract class AppDatabase : RoomDatabase() {
                     .also { INSTANCE = it }
             }
         }
-
-        }
     }
+}

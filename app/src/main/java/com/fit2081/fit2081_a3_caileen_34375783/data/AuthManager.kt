@@ -14,13 +14,21 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
+// Using Preferences Data Store, storing asynchronously as key-value pairs
 val Context.dataStore by preferencesDataStore(name = "auth_prefs")
 
+/**
+ * To store the current status of logged in/out user.
+ * Will store it although app is refreshed, until logged out.
+ */
 object AuthManager {
     private val USER_ID_KEY = stringPreferencesKey("user_id")
     var userId = mutableStateOf<String?>(null)
         private set
 
+    /**
+     * Initialises the userId for persistent storage.
+     */
     fun init(context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
             val storedUserId = context.dataStore.data
@@ -35,6 +43,9 @@ object AuthManager {
         }
     }
 
+    /**
+     * Replaces the userId with a specific string (the id).
+     */
     fun login(context: Context, userId: String) {
         this.userId.value = userId
         CoroutineScope(Dispatchers.IO).launch {
@@ -44,6 +55,9 @@ object AuthManager {
         }
     }
 
+    /**
+     * Removes the userId data to null
+     */
     fun logout(context: Context) {
         this.userId.value = null
         CoroutineScope(Dispatchers.IO).launch {
@@ -53,6 +67,9 @@ object AuthManager {
         }
     }
 
+    /**
+     * Gets the current userId stored.
+     */
     fun getPatientId(): String? {
         return userId.value
     }

@@ -14,7 +14,7 @@ class InsightViewModel (application: Application): AndroidViewModel(application)
     private val repository: PatientRepository = PatientRepository(application.applicationContext)
 
     /**
-     * Function to get all insights of user through list of lists..
+     * Function to get all insights of user through list of lists.
      */
     var insightsData = mutableStateOf<List<List<String>>>(emptyList())
     fun getInsightsById(userId: String) : List<List<String>> {

@@ -6,6 +6,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 
+/**
+ * Inspired by Lab Week 7 about Gen AI.
+ */
 interface FruitAPIService {
     // Interface for defining the API endpoints.
     // Endpoint to fetch a list of posts.

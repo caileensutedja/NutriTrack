@@ -15,9 +15,8 @@ class FoodIntakeRepository(context: Context) {
      */
     suspend fun attemptFoodIntake(foodIntake: FoodIntake) {
         val existingAttempt = foodIntakeDao.getQuizAttemptByPatientId(foodIntake.userID).firstOrNull()
-
         if (existingAttempt != null) {
-            // Copy the existing ID to update the respective food intake data
+            // Copy the existing ID to update the respective food intake data, and re-insert it.
             val updated = foodIntake.copy(id = existingAttempt.id)
             foodIntakeDao.update(updated)
         } else {

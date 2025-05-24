@@ -79,7 +79,8 @@ fun InsightsScreen(
     val totalScoreMessage = insightViewModel.getTotalScoreMessage(mID)
 
     Column (
-        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+        modifier = Modifier.fillMaxSize()
+            .verticalScroll(rememberScrollState())
     ) {
         Spacer(modifier = Modifier.height(25.dp))
         Row (
@@ -113,7 +114,7 @@ fun InsightsScreen(
         Row (modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically)
         {
-//            Custom for the total score.
+            // Custom for the total score.
             val sliderPosition = (totalScore.toFloatOrNull() ?: 0f)/ 100f
             Slider(
                 value = sliderPosition, // Sets slider position
@@ -155,7 +156,7 @@ fun InsightsScreen(
             }
             Spacer(modifier = Modifier.height(10.dp))
             /**
-             * Button to share navigate to the NutriCoach screen..
+             * Button to share navigate to the NutriCoach screen.
              */
             Button(
                 onClick = {
@@ -198,7 +199,6 @@ fun FoodScoreInsight(data: List<List<String>>) {
                         .padding(start = 15.dp)
                 )
                 Spacer(modifier = Modifier.width(5.dp))
-//                strValue.toIntOrNull() ?: strValue.toFloatOrNull() ?: 0f
                     val sliderPosition = (score.toFloatOrNull() ?: 0f)/ (total.toFloat())
                     Slider(
                         value = sliderPosition, // Sets slider position

@@ -1,7 +1,6 @@
 package com.fit2081.fit2081_a3_caileen_34375783.UIScreen.QuestionnaireScreen
 
 import android.app.Application
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.*
 import androidx.lifecycle.AndroidViewModel
@@ -20,12 +19,11 @@ import java.time.format.DateTimeFormatter
  * ViewModel class for managing food intake attempts data.
  * This class interacts with the FoodIntake Repository to perform database operations
  * and provides data to the UI.
- *
- * @param context The application context.
  */
 class QuestionnaireViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = FoodIntakeRepository(application.applicationContext)
 
+    // Variables
     var userId = mutableStateOf<String?>(null)
 
     var fruit = mutableStateOf(false)
@@ -43,6 +41,7 @@ class QuestionnaireViewModel(application: Application) : AndroidViewModel(applic
     var timeSleep = mutableStateOf<String>("00:00")
     var timeWakeUp = mutableStateOf<String>("00:00")
 
+    // For the chekcboxes
     var categoryByColumn = listOf(
         listOf(
             FoodCheckboxItem("Fruits", fruit),
@@ -61,6 +60,7 @@ class QuestionnaireViewModel(application: Application) : AndroidViewModel(applic
         )
     )
 
+    // For the persona choices
     val personaList = listOf(
         PersonaChoice(
             "Health Devotee",
@@ -94,39 +94,41 @@ class QuestionnaireViewModel(application: Application) : AndroidViewModel(applic
         )
     )
 
+    // Run at first time created
     init {
         val patientId = AuthManager.getPatientId().toString()
         userId.value = patientId
         getQuizAttemptByPatientId(patientId)
     }
 
-    // Fetch quiz attempt for patient ID and update UI state
+    /**
+     * Gets the patient's questionnaire attempt by their ID.
+     */
     fun getQuizAttemptByPatientId(patientId: String) {
         viewModelScope.launch {
             repository.getQuizAttemptByPatientId(patientId)
                 .collect { foodIntakeData ->
-                    if (foodIntakeData != null) {
-                        fruit.value = foodIntakeData.fruit
-                        vegetable.value = foodIntakeData.vegetable
-                        grains.value = foodIntakeData.grains
-                        redMeat.value = foodIntakeData.redMeat
-                        seafood.value = foodIntakeData.seafood
-                        poultry.value = foodIntakeData.poultry
-                        fish.value = foodIntakeData.fish
-                        eggs.value = foodIntakeData.eggs
-                        nutsSeeds.value = foodIntakeData.nutsSeeds
-                        persona.value = foodIntakeData.persona
-                        timeMeal.value = foodIntakeData.timeMeal
-                        timeSleep.value = foodIntakeData.timeSleep
-                        timeWakeUp.value = foodIntakeData.timeWakeup
-                    }
+                    fruit.value = foodIntakeData.fruit
+                    vegetable.value = foodIntakeData.vegetable
+                    grains.value = foodIntakeData.grains
+                    redMeat.value = foodIntakeData.redMeat
+                    seafood.value = foodIntakeData.seafood
+                    poultry.value = foodIntakeData.poultry
+                    fish.value = foodIntakeData.fish
+                    eggs.value = foodIntakeData.eggs
+                    nutsSeeds.value = foodIntakeData.nutsSeeds
+                    persona.value = foodIntakeData.persona
+                    timeMeal.value = foodIntakeData.timeMeal
+                    timeSleep.value = foodIntakeData.timeSleep
+                    timeWakeUp.value = foodIntakeData.timeWakeup
                 }
         }
     }
 
-    // Submit the questionnaire
+    /**
+     * Submits the questionnaire answers by either updating or creating a new one in the databse.
+     */
     fun submit() : Boolean{
-        Log.d("debug questionnaire", "debug questionnaire time meal is now: " + timeMeal.value)
         val foodIntake = FoodIntake(
             userID = userId.value ?: "",
             fruit = fruit.value,
@@ -138,21 +140,20 @@ class QuestionnaireViewModel(application: Application) : AndroidViewModel(applic
             fish = fish.value,
             eggs = eggs.value,
             nutsSeeds = nutsSeeds.value,
-            persona = persona.value ?: "",
+            persona = persona.value,
             timeMeal = timeMeal.value,
             timeSleep = timeSleep.value,
             timeWakeup = timeWakeUp.value
         )
-//        Log.d("debug questionnaire", "debug questionnaire time meal is now: " + timeMeal.value)
-        Log.d("debug questionnaire", "debug questionnaire sleep meal is now: " + timeSleep.value)
-        Log.d("debug questionnaire", "debug questionnaire wake meal is now: " + timeWakeUp.value)
 
+        // Validation that all required sections are filled.
         if (timeSleep.value != "00:00" && timeWakeUp.value!= "00:00" && timeMeal.value!= "00:00" && persona.value != "") {
+            // Validation for valid, reasonable timings choices.
             if (validateTime(timeSleep.value, timeWakeUp.value, timeMeal.value) ){
                     viewModelScope.launch {
                         repository.attemptFoodIntake(foodIntake)
                     }
-                    Toast.makeText(application, "Questionnaire saved!.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(application, "Questionnaire saved!", Toast.LENGTH_SHORT).show()
                     return true
             } else {
                 Toast.makeText(application, "Please choose reasonable timings.", Toast.LENGTH_SHORT).show()
@@ -164,6 +165,14 @@ class QuestionnaireViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
+    /**
+     * This function validates the time, so that the person can't eat during they are asleep.
+     *
+     * AI Declaration
+     * I used AI to help me generate a validation function for timings, because using string would
+     * not work. Hence, it uses LocalTime parsing and functions related to time comparison. I have
+     * modified some of the code response to the code shown below.
+     */
     private fun validateTime(sleep: String, wake: String, eat: String): Boolean {
         return try {
             val fmt = DateTimeFormatter.ofPattern("HH:mm")

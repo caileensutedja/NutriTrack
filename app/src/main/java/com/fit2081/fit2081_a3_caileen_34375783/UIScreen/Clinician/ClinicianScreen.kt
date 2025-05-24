@@ -1,6 +1,7 @@
 package com.fit2081.fit2081_a3_caileen_34375783.UIScreen.Clinician
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -34,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -131,10 +133,11 @@ fun ClinicianDashboard(navController: NavHostController) {
     val clinicianViewModel: ClinicianViewModel = viewModel()
     val uiState by clinicianViewModel.uiState.collectAsState()
     var result by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
 
     Surface(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
     ) {
         Column(
             modifier = Modifier
@@ -171,24 +174,15 @@ fun ClinicianDashboard(navController: NavHostController) {
             if (uiState is UiState.Loading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
             } else {
-//                var textColor = MaterialTheme.colorScheme.onSurface
                 if (uiState is UiState.Error) {
-//                    textColor = MaterialTheme.colorScheme.error
                     result = (uiState as UiState.Error).errorMessage
+                    Text(result) // Error message
+                    Toast.makeText(context, result, Toast.LENGTH_SHORT).show()
                 } else if (uiState is UiState.Success) {
                     result = (uiState as UiState.Success).outputText
                     PrettyTextView(result)
                 }
-//                Text(
-//                    text = PrettyTextView(result),
-//                    textAlign = TextAlign.Start,
-//                    color = textColor,
-//                    modifier = Modifier
-//                        .align(Alignment.CenterHorizontally)
-//                        .padding(16.dp)
-//                )
             }
-
             Spacer(modifier = Modifier.weight(1f))
             Button(
                 onClick = {
@@ -202,6 +196,15 @@ fun ClinicianDashboard(navController: NavHostController) {
     }
 }
 
+
+/**
+ * This function aims to create a formatted text of the generated response.
+ *
+ * AI Declaration
+ *
+ * I used ChatGPT to help me generate this PrettyTextView function to parse text like bold from
+ * the GenAI response.
+ */
 @Composable
 fun PrettyTextView(text: String) {
     // Define scrollable state
@@ -217,12 +220,10 @@ fun PrettyTextView(text: String) {
                 if (boldEnd != -1) {
                     // Add normal text before the bold part
                     append(text.substring(startIndex, boldStart))
-
                     // Add bold text
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                         append(text.substring(boldStart + 2, boldEnd))
                     }
-
                     // Move to next part after the second "**"
                     startIndex = boldEnd + 2
                 } else {
@@ -234,7 +235,6 @@ fun PrettyTextView(text: String) {
             }
         }
     }
-
     // Display the formatted text inside a scrollable container with a border
     Column(
         modifier = Modifier

@@ -31,7 +31,7 @@ class HomeViewModel (application: Application): AndroidViewModel(application){
     }
 
     /**
-     * Function to get the total score of the user.
+     * Function to get the name of the user.
      */
     var name = mutableStateOf<String>("")
     fun getName(userId: String) : String {

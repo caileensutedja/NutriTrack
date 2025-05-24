@@ -4,6 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
+/**
+ * Inspired by Lab Week 7 about Gen AI.
+ */
 class PicSumViewModel : ViewModel()  {
     private val _imageUrl = MutableLiveData<String>()
         val imageUrl: LiveData<String> = _imageUrl

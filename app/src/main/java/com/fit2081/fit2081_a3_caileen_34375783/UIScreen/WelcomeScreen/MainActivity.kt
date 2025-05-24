@@ -8,18 +8,21 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -30,42 +33,33 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
-
-import android.util.Log;
-import androidx.compose.runtime.LaunchedEffect
+import com.fit2081.fit2081_a3_caileen_34375783.R
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.LoginScreen.LoginPage
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.QuestionnaireScreen.QuestionnairePage
-import com.fit2081.fit2081_a3_caileen_34375783.R
 import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
+import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
 
 class MainActivity : ComponentActivity() {
     private val welcomeViewModel: WelcomeViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // To initialise the userId for persistent storage.
         AuthManager.init(applicationContext)
         enableEdgeToEdge()
         setContent {
             FIT2081_A3_Caileen_34375783Theme {
-//                AuthManager.logout(applicationContext)
-//                welcomeViewModel.deleteDB(applicationContext)
-
                 // Checks if the csv data is loaded
                 welcomeViewModel.initialDB(applicationContext)
-                Log.d("debug main act if restart", "auth manager start: "+ AuthManager.getPatientId())
                 // Variables
                 val context = LocalContext.current
                 val patientId = AuthManager.getPatientId()
-
                 LaunchedEffect(patientId) {
                     if (patientId != null) {
                         context.startActivity(Intent(context, QuestionnairePage::class.java))
                     }
                 }
-
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     if (patientId == null) {
-                        Log.d("debug main act", "pass wel screen")
                         WelcomeScreen(modifier = Modifier.padding(innerPadding))
                     }
                 }
@@ -74,15 +68,18 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ * Welcome screen for initial users to see.
+ */
 @Preview(showBackground = true)
 @Composable
 fun WelcomeScreen(modifier: Modifier = Modifier) {
     val context = LocalContext.current
-
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -132,6 +129,5 @@ fun WelcomeScreen(modifier: Modifier = Modifier) {
             fontWeight = FontWeight.Light
         )
     }
-
 }
 

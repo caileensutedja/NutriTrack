@@ -17,13 +17,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,7 +34,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.Clinician.ClinicianLogin
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.HomeScreen.BottomBar
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.HomeScreen.MyNavHost
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.LoginScreen.LoginPage
@@ -68,14 +66,14 @@ class SettingsScreen : ComponentActivity() {
     }
 }
 
+/**
+ * Settings page.
+ */
 @Composable
 fun SettingsPage(navHostController: NavHostController){
     val settingViewModel: SettingViewModel = viewModel()
-
-    var context = LocalContext.current
+    val context = LocalContext.current
     val mID = AuthManager.getPatientId().toString()
-    val name = settingViewModel.getName(mID)
-    val phoneNumber = settingViewModel.getPhoneNumber(mID)
 
     Column(
         modifier = Modifier
@@ -122,15 +120,14 @@ fun SettingsPage(navHostController: NavHostController){
                 Spacer(modifier = Modifier.height(10.dp))
             }
             Column(modifier = Modifier.fillMaxWidth(),
-//                horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(0.dp)){
                 Text(
-                    text = name,
+                    text = settingViewModel.getName(mID), // get name
                     fontSize = 15.sp,
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
-                    text = phoneNumber,
+                    text = settingViewModel.getPhoneNumber(mID), // get phone number
                     fontSize = 15.sp,
                 )
                 Spacer(modifier = Modifier.height(10.dp))

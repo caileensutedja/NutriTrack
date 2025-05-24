@@ -7,9 +7,7 @@ import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Data Access Object (DAO) for interacting with the
- * nutricoach_tips table in the database.
-
+ * Data Access Object (DAO) for interacting with the nutricoach_tips table in the database.
  */
 @Dao
 interface NutriCoachTipsDao {

@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.AlertDialog
@@ -90,7 +92,7 @@ fun LoginScreen(
     // Obtaining State values from the viewmodel
     val idList by loginViewModel.getAllUserIds().collectAsStateWithLifecycle(emptyList())
 
-    // Validation variables
+    // Validation variables for UI error message display.
     var passwordPresent by remember { mutableStateOf(false) }
     var idPresent by remember { mutableStateOf(false) }
 
@@ -104,7 +106,8 @@ fun LoginScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -189,7 +192,15 @@ fun LoginScreen(
              * Continue Button to Log in
              */
             val loginResult by loginViewModel.loginResult.collectAsStateWithLifecycle()
-
+            /**
+             * This gets the login result which is type data class LoginReesult and displays text
+             * based on it.
+             *
+             * AI Declaration
+             *
+             * I used ChatGPT to help me write how I can get the sealed class object and return UI
+             * messages based on the result.
+             */
             loginResult?.let { result ->
                 when (result) {
                     is LoginViewModel.LoginResult.Success -> {
@@ -208,7 +219,6 @@ fun LoginScreen(
                         Toast.makeText(context, "User ID not found.", Toast.LENGTH_SHORT).show()
                     }
                 }
-
                 // Reset result so it doesn't keep firing
                 loginViewModel.loginResult.value = null
             }
@@ -233,7 +243,6 @@ fun LoginScreen(
             ) {
                 Text("Register")
             }
-
         }
     }
 }
@@ -243,8 +252,6 @@ fun RegisterScreen(
     loginViewModel: LoginViewModel,
     goToLoginScreen: () -> Unit
 ) {
-    Log.d("debug regis", "initial regis func")
-
     //Variables
     var userId by remember { mutableStateOf("") }
     var userPhone by remember { mutableStateOf("") }
@@ -252,7 +259,7 @@ fun RegisterScreen(
     // Obtaining State values from the viewmodel
     val idList by loginViewModel.getAllUserIds().collectAsStateWithLifecycle(emptyList())
 
-    // For validation
+    // For validation for UI display.
     var phoneNoError by remember { mutableStateOf(false) }
 
     // Boolean where true is showing the DropdownMenu and false is closing it.
@@ -265,7 +272,8 @@ fun RegisterScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -358,17 +366,24 @@ fun RegisterScreen(
             Spacer(modifier = Modifier.height(10.dp))
 
             /**
-             * Register Button
-             * save it in the db
+             * Register Button, verifies the existing account details.
              */
             var showModal by remember { mutableStateOf(false) }
             val regisUserDataValidation by loginViewModel.registerUserDataResult.collectAsStateWithLifecycle()
-
+            /**
+             * This gets the registration validation result which is type data class RegisterResult and
+             * displays text based on it.
+             *
+             * AI Declaration
+             *
+             * I used ChatGPT to help me write how I can get the sealed class object and return UI
+             * messages based on the result.
+             */
             regisUserDataValidation?.let { result ->
                 when (result) {
                     is LoginViewModel.RegisterResult.Success -> {
                         Toast.makeText(context, "Correct credentials.", Toast.LENGTH_SHORT).show()
-                        showModal = true
+                        showModal = true //Open modal to continue registration
                     }
                     LoginViewModel.RegisterResult.InvalidPhone -> {
                         Toast.makeText(context, "Incorrect phone number, please try again.", Toast.LENGTH_SHORT).show()
@@ -404,8 +419,7 @@ fun RegisterScreen(
             Spacer(modifier = Modifier.height(5.dp))
 
             /**
-             * Login Button
-             * move to screen
+             * Login Button, goes to LogIn Screen
              */
             Button(
                 onClick = goToLoginScreen)
@@ -421,7 +435,7 @@ fun ClaimAccountAlertDialog(
     loginViewModel: LoginViewModel,
     onDismissRequest: () -> Unit // This will handle dismissal
 ) {
-    var context = LocalContext.current
+    val context = LocalContext.current
     var userName by remember { mutableStateOf("") }
     var userPassword by remember { mutableStateOf("") }
     var userConfirmPassword by remember { mutableStateOf("") }
@@ -485,7 +499,6 @@ fun ClaimAccountAlertDialog(
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
-
                 if (!passwordMatch) {
                     Text(
                         text = "Your password does not match, please try again.",

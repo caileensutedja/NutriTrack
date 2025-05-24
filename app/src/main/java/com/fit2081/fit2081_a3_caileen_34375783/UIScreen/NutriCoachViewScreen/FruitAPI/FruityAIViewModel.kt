@@ -9,13 +9,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-
+/**
+ * Inspired by Lab Week 7 about Gen AI.
+ */
 class FruityAIViewModel : ViewModel() {
-
-    private val _uiState: MutableStateFlow<UiState> =
-        MutableStateFlow(UiState.Initial)
-    val uiState: StateFlow<UiState> =
-        _uiState.asStateFlow()
+    private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Initial)
+    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
     fun fetchFruitInfo(fruitName: String) {
         _uiState.value = UiState.Loading
@@ -38,7 +37,7 @@ class FruityAIViewModel : ViewModel() {
 
                         _uiState.value = UiState.Success(output)
                     } ?: run {
-                        _uiState.value = UiState.Error("Empty response body")
+                        _uiState.value = UiState.Error("Empty response body.")
                     }
                 } else {
                     _uiState.value = UiState.Error("Unavailable fruit, consider banana, tomato, strawberry, melon, and others!")

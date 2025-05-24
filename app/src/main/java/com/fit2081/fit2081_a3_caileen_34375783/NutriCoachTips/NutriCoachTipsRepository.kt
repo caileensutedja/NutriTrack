@@ -23,7 +23,5 @@ class NutriCoachTipsRepository(context: Context) {
     fun getAllTips(patientId: String): Flow<List<String>> {
         return nutriCoachTipsDao.getAllTips(patientId)
     }
-
-//    val allTips (patientId: String): Flow<List<String>> = nutriCoachTipsRepository.getAllTips(patientId)
 }
 

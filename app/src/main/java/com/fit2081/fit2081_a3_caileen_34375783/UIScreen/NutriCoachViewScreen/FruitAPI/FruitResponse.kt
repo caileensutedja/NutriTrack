@@ -1,5 +1,8 @@
 package com.fit2081.fit2081_a3_caileen_34375783.UIScreen.NutriCoachViewScreen.FruitAPI
 
+/**
+ * Data class for the fruity response.
+ */
 data class FruityResponse(
     var family: String,
     var nutritions: FruityInfo
