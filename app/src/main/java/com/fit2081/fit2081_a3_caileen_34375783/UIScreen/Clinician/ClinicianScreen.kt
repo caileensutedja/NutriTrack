@@ -137,7 +137,7 @@ fun ClinicianDashboard(navController: NavHostController) {
 
 
     Surface(
-        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+        modifier = Modifier.fillMaxSize()
     ) {
         Column(
             modifier = Modifier

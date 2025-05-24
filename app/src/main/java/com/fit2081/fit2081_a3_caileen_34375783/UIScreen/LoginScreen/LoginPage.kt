@@ -48,7 +48,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.HomeScreen.HomeScreen
 import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.QuestionnaireScreen.QuestionnairePage
+import com.fit2081.fit2081_a3_caileen_34375783.UIScreen.WelcomeScreen.WelcomeViewModel
 import com.fit2081.fit2081_a3_caileen_34375783.data.AuthManager
 import com.fit2081.fit2081_a3_caileen_34375783.ui.theme.FIT2081_A3_Caileen_34375783Theme
 
@@ -206,7 +209,29 @@ fun LoginScreen(
                     is LoginViewModel.LoginResult.Success -> {
                         Toast.makeText(context, "Login successful.", Toast.LENGTH_SHORT).show()
                         AuthManager.login(context, result.patient.userID)
-                        context.startActivity(Intent(context, QuestionnairePage::class.java))
+                        val welcomeViewModel: WelcomeViewModel = viewModel()
+                        welcomeViewModel.checkQuestionnaire(userId) { hasAttempt ->
+                            Log.d("debug in questionnaire pg", "START pg now userId: $userId")
+
+                            if (hasAttempt) {
+                                Log.d("debug in questionnaire pg", "User has an attempt, redirecting to HomeScreen")
+                                context.startActivity(Intent(context, HomeScreen::class.java))
+                            } else {
+                                Log.d("debug in questionnaire pg", "No attempt found, redirecting to QuestionnairePage")
+                                context.startActivity(Intent(context, QuestionnairePage::class.java))
+                            }
+                        }
+//                        welcomeViewModel.checkQuestionnaire(userId)
+//                        Log.d("debug in questionnaire pg", "debug in questionnaire  START pgnow userid" + welcomeViewModel.hasAttempt.value)
+//
+//                        if(welcomeViewModel.hasAttempt.value) {
+//                            Log.d("debug in questionnaire pg", "debug in questionnaire pgnow userid" + userId +" has attempt")
+//                            Log.d("debug in questionnaire pg", "debug in questionnaire pghas attempt")
+//                            context.startActivity(Intent(context, HomeScreen::class.java))
+//                        } else {
+//                            Log.d("debug in questionnaire pg", "debug in questionnaire pg no attempt")
+//                            context.startActivity(Intent(context, QuestionnairePage::class.java))
+//                        }
                     }
                     LoginViewModel.LoginResult.IncorrectPassword -> {
                         Toast.makeText(context, "Incorrect password, please try again.", Toast.LENGTH_SHORT).show()

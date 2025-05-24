@@ -1,6 +1,7 @@
 package com.fit2081.fit2081_a3_caileen_34375783.FoodIntake
 
 import android.content.Context
+import android.util.Log
 import com.fit2081.fit2081_a3_caileen_34375783.data.AppDatabase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
@@ -30,4 +31,13 @@ class FoodIntakeRepository(context: Context) {
      */
     fun getQuizAttemptByPatientId(patientId: String): Flow<FoodIntake> =
         foodIntakeDao.getQuizAttemptByPatientId(patientId)
+
+    /**
+     * To check if patient has an attempt or not.
+     */
+     suspend fun getAttemptByIDBool(patientId: String) : Boolean {
+        val existingAttempt = foodIntakeDao.getQuizAttemptByPatientId(patientId).firstOrNull()
+        Log.d("debug vm", "debug vm in repo is " + existingAttempt)
+        return existingAttempt != null
+    }
 }

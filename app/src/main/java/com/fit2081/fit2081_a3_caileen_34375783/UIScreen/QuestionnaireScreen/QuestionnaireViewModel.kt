@@ -108,19 +108,21 @@ class QuestionnaireViewModel(application: Application) : AndroidViewModel(applic
         viewModelScope.launch {
             repository.getQuizAttemptByPatientId(patientId)
                 .collect { foodIntakeData ->
-                    fruit.value = foodIntakeData.fruit
-                    vegetable.value = foodIntakeData.vegetable
-                    grains.value = foodIntakeData.grains
-                    redMeat.value = foodIntakeData.redMeat
-                    seafood.value = foodIntakeData.seafood
-                    poultry.value = foodIntakeData.poultry
-                    fish.value = foodIntakeData.fish
-                    eggs.value = foodIntakeData.eggs
-                    nutsSeeds.value = foodIntakeData.nutsSeeds
-                    persona.value = foodIntakeData.persona
-                    timeMeal.value = foodIntakeData.timeMeal
-                    timeSleep.value = foodIntakeData.timeSleep
-                    timeWakeUp.value = foodIntakeData.timeWakeup
+                    if (foodIntakeData != null) {
+                        fruit.value = foodIntakeData.fruit
+                        vegetable.value = foodIntakeData.vegetable
+                        grains.value = foodIntakeData.grains
+                        redMeat.value = foodIntakeData.redMeat
+                        seafood.value = foodIntakeData.seafood
+                        poultry.value = foodIntakeData.poultry
+                        fish.value = foodIntakeData.fish
+                        eggs.value = foodIntakeData.eggs
+                        nutsSeeds.value = foodIntakeData.nutsSeeds
+                        persona.value = foodIntakeData.persona
+                        timeMeal.value = foodIntakeData.timeMeal
+                        timeSleep.value = foodIntakeData.timeSleep
+                        timeWakeUp.value = foodIntakeData.timeWakeup
+                    }
                 }
         }
     }
