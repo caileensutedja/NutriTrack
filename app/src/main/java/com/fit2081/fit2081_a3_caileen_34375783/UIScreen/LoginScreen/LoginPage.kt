@@ -2,7 +2,6 @@ package com.fit2081.fit2081_a3_caileen_34375783.UIScreen.LoginScreen
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -211,27 +210,12 @@ fun LoginScreen(
                         AuthManager.login(context, result.patient.userID)
                         val welcomeViewModel: WelcomeViewModel = viewModel()
                         welcomeViewModel.checkQuestionnaire(userId) { hasAttempt ->
-                            Log.d("debug in questionnaire pg", "START pg now userId: $userId")
-
                             if (hasAttempt) {
-                                Log.d("debug in questionnaire pg", "User has an attempt, redirecting to HomeScreen")
                                 context.startActivity(Intent(context, HomeScreen::class.java))
                             } else {
-                                Log.d("debug in questionnaire pg", "No attempt found, redirecting to QuestionnairePage")
                                 context.startActivity(Intent(context, QuestionnairePage::class.java))
                             }
                         }
-//                        welcomeViewModel.checkQuestionnaire(userId)
-//                        Log.d("debug in questionnaire pg", "debug in questionnaire  START pgnow userid" + welcomeViewModel.hasAttempt.value)
-//
-//                        if(welcomeViewModel.hasAttempt.value) {
-//                            Log.d("debug in questionnaire pg", "debug in questionnaire pgnow userid" + userId +" has attempt")
-//                            Log.d("debug in questionnaire pg", "debug in questionnaire pghas attempt")
-//                            context.startActivity(Intent(context, HomeScreen::class.java))
-//                        } else {
-//                            Log.d("debug in questionnaire pg", "debug in questionnaire pg no attempt")
-//                            context.startActivity(Intent(context, QuestionnairePage::class.java))
-//                        }
                     }
                     LoginViewModel.LoginResult.IncorrectPassword -> {
                         Toast.makeText(context, "Incorrect password, please try again.", Toast.LENGTH_SHORT).show()
@@ -326,7 +310,6 @@ fun RegisterScreen(
                 // Prevents typing in the input
                 readOnly = true
             )
-            Log.d("debug regis", "initial regis 3")
 
             //Dropdown menu
             DropdownMenu(

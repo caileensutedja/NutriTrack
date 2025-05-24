@@ -67,7 +67,6 @@ class QuestionnairePage : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-
             FIT2081_A3_Caileen_34375783Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Column(
@@ -77,9 +76,7 @@ class QuestionnairePage : ComponentActivity() {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         TopAppBar()
-                        Log.d("CRASH ISSUE", "passes before qscreen")
                         QuestionnaireScreen()
-                        Log.d("CRASH ISSUE", "passes after qscreen")
                     }
                 }
             }

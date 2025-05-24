@@ -2,7 +2,6 @@ package com.fit2081.fit2081_a3_caileen_34375783.UIScreen.WelcomeScreen
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -60,9 +59,6 @@ class MainActivity : ComponentActivity() {
                 LaunchedEffect(patientId) {
                     if (patientId != null) {
                         welcomeViewModel.checkQuestionnaire(patientId) { hasAttempt ->
-                            Log.d("debug vm", "debug main patient id not null")
-                            Log.d("debug vm", "debug hasAttempt from callback: $hasAttempt")
-
                             if (hasAttempt) {
                                 context.startActivity(Intent(context, HomeScreen::class.java))
                             } else {
@@ -71,19 +67,6 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 }
-
-//                welcomeViewModel.checkQuestionnaire(patientId)
-//                LaunchedEffect(patientId) {
-//                    if (patientId != null) {
-//                        Log.d("debug vm", "debug main patient id not null")
-//                        Log.d("debug vm", "debug main patient id not null" + welcomeViewModel.hasAttempt.value)
-//                        if (welcomeViewModel.hasAttempt.value) {
-//                            context.startActivity(Intent(context, HomeScreen::class.java))
-//                        } else {
-//                            context.startActivity(Intent(context, QuestionnairePage::class.java))
-//                        }
-//                    }
-//                }
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     if (patientId == null) {
                         WelcomeScreen(modifier = Modifier.padding(innerPadding))
