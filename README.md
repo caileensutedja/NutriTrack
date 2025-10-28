@@ -28,7 +28,7 @@ It demonstrates the integration of **backend data management** and **modern UI d
 ---
 
 ## How to Run:
-1. Clone or Download the Project Repository.
+1. Download the Project Repository.
 2. Open the project in Android Studio.
 3. Set up and launce an Android Emulator.
 4. Run the application (^R/Shift+F10) to build and run the application on the emulator.
