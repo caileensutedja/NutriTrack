@@ -36,6 +36,6 @@ It demonstrates the integration of **backend data management** and **modern UI d
 --- 
 
 Developed by Caileen Sutedja
-for FIT2801 – Mobile Application Development (Monash University)
+for FIT2081 – Mobile Application Development (Monash University)
 
 Semester 1, 2025
