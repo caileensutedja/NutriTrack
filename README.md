@@ -1,6 +1,6 @@
 ## NutriTrack App - Mobile App Development Project
 
-**NutriTrack App** is a mobile application developed as part of the **FIT2801 Mobile Application Development** unit.  
+**NutriTrack App** is a mobile application developed as part of the **FIT2081 Mobile Application Development** unit.  
 It demonstrates the integration of **backend data management** and **modern UI design** using **Kotlin**, **Room Database**, and **Jetpack Compose** within **Android Studio**.
 
 ---
